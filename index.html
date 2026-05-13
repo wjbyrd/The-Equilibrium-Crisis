@@ -2031,6 +2031,11 @@ let questionHistory = {
 };
 
 const SAVE_KEY = "equilibriumCrisisSave_v1";
+const REALM_MISSION_KEY = "equilibriumCrisis";
+const REALM_STARTED_KEY = "economicRealm_equilibriumCrisis_started";
+const REALM_COMPLETE_KEY = "economicRealm_equilibriumCrisis_complete";
+const REALM_STATUS_KEY = "economicRealm_equilibriumCrisis_status";
+const REALM_ROOM_KEY = "economicRealm_equilibriumCrisis_room";
 
 function saveGameState(){
     const saveData = {
@@ -2051,6 +2056,9 @@ function saveGameState(){
         lastTypes,
         usedQuestions,
         questionHistory,
+        rapidGuessHistory,
+        rapidGuessWarnings,
+        rapidGuessLocked,
         savedAt: Date.now(),
 
         artifacts: {
@@ -2062,6 +2070,9 @@ function saveGameState(){
 
     localStorage.setItem(SAVE_KEY, JSON.stringify(saveData));
     localStorage.setItem("gauntletRoom", String(room));
+    localStorage.setItem(REALM_STARTED_KEY, "true");
+    localStorage.setItem(REALM_STATUS_KEY, "contested");
+    localStorage.setItem(REALM_ROOM_KEY, String(room));
 
     const autosave = document.getElementById("autosave");
     if(autosave){
@@ -2090,12 +2101,16 @@ function loadSavedGame(){
 
         conceptMemory = saveData.conceptMemory || {};
         masteryState = saveData.masteryState || { byTag: {}, byObjective: {}, bySkill: {}, recent: [] };
+        if(!masteryState.bySkill) masteryState.bySkill = {};
         adaptiveMode = saveData.adaptiveMode || "support";
         tagHistory = saveData.tagHistory || [];
         lastTypes = saveData.lastTypes || [];
 
         usedQuestions = saveData.usedQuestions || usedQuestions;
         questionHistory = saveData.questionHistory || questionHistory;
+        rapidGuessHistory = saveData.rapidGuessHistory || [];
+        rapidGuessWarnings = Number(saveData.rapidGuessWarnings || 0);
+        rapidGuessLocked = !!saveData.rapidGuessLocked;
 
         if(saveData.artifacts?.vaultShard) localStorage.setItem("vaultShard", "true");
         if(saveData.artifacts?.vaultGauge) localStorage.setItem("vaultGauge", "true");
@@ -3164,6 +3179,64 @@ const artifacts = {
         text: "The seal restores balance. Price controls, taxes, and market pressure can no longer hide their consequences."
     }
 };
+
+
+function getRecoveryLine(stage){
+  if(stage === "repair"){
+    return "Recovery route opened. The Meridian is isolating the broken market signal.";
+  }
+
+  if(stage === "bridge"){
+    return "Bridge calibration active. Apply the rule before the Crisis lets you advance.";
+  }
+
+  if(stage === "retest"){
+    return "Retest signal reopened. Same weakness. Cleaner adjustment required.";
+  }
+
+  if(stage === "miss"){
+    return "The market signal is still unstable. Repair the weakness before advancing.";
+  }
+
+  return "Recovery confirmed. Return to the Crisis.";
+}
+
+function getEquilibriumCrisisBossName(){
+  if(room === 10) return "The Signal Breaker";
+  if(room === 20) return "The Measure Warden";
+  if(room === 30) return "The Market Marshal";
+  return "The Equilibrium Crisis";
+}
+
+function getEquilibriumCrisisBossLine({ isCorrect, tag, type, objective, streak, bossHealth, responseTime }){
+  const bossName = getEquilibriumCrisisBossName();
+
+  if(isCorrect && streak >= 5){
+    return `${bossName}: Stable signal. Now prove it was not a lucky click.`;
+  }
+
+  if(isCorrect && bossHealth <= 2){
+    return `${bossName}: Clean adjustment. The crisis is losing pressure.`;
+  }
+
+  if(!isCorrect && responseTime < 5000){
+    return `${bossName}: Fast answer. Bad answer. The market eats that alive.`;
+  }
+
+  if(!isCorrect && (tag === "demand" || tag === "supply" || tag === "equilibrium" || tag === "price_ceiling" || tag === "price_floor" || tag === "taxes" || tag === "tax_incidence")){
+    return `${bossName}: You misread the signal. Curve, quantity, wedge, burden — get the category right.`;
+  }
+
+  if(!isCorrect && tag){
+    return `${bossName}: Weakness logged: ${tag}. The Crisis will circle back.`;
+  }
+
+  if(isCorrect){
+    return `${bossName}: Correct. One clear signal does not end the Crisis.`;
+  }
+
+  return `${bossName}: The checkpoint holds. Try again.`;
+}
   
 // =============================================
 // USERNAME RESTORE — SAFE TO MODIFY
@@ -3266,6 +3339,9 @@ if(!hasSavedRun){
 localStorage.setItem("gauntletEmail", studentEmail);
 localStorage.setItem("gauntletUser", username);
 localStorage.setItem("gauntletRunID", runID);
+localStorage.setItem(REALM_STARTED_KEY, "true");
+localStorage.setItem(REALM_STATUS_KEY, "contested");
+localStorage.setItem(REALM_ROOM_KEY, String(room || 1));
 
 sendGameData({
     runID: runID,
@@ -4953,7 +5029,7 @@ recordAdaptiveAttempt(currentQuestion, isCorrect, responseTime);
                 currentQuestion.hint ? "💡 Hint: " + currentQuestion.hint : "";
 
             msgElement.innerHTML =
-                `<span class='fade-out-text'>Control returns. Now prove your command under pressure.</span>`;
+                `<span class='fade-out-text'>${getRecoveryLine("bridge")}</span>`;
 
             displayQuestion();
             return;
@@ -4978,7 +5054,7 @@ recordAdaptiveAttempt(currentQuestion, isCorrect, responseTime);
                 currentQuestion.hint ? "💡 Hint: " + currentQuestion.hint : "";
 
             msgElement.innerHTML =
-                `<span class='fade-out-text'>The concept is contained. One final proof.</span>`;
+                `<span class='fade-out-text'>${getRecoveryLine("retest")}</span>`;
 
             displayQuestion();
             return;
@@ -4991,7 +5067,7 @@ recordAdaptiveAttempt(currentQuestion, isCorrect, responseTime);
     adaptiveMode = "support";
 
     msgElement.innerHTML =
-        `<span class='fade-out-text'>Recovery confirmed. Return to the Crisis.</span>`;
+        `<span class='fade-out-text'>${getRecoveryLine("complete")}</span>`;
 
     room = returnRoom;
     saveGameState();
@@ -5013,7 +5089,19 @@ recordAdaptiveAttempt(currentQuestion, isCorrect, responseTime);
         if(isBossRoom){
         bossHealth--;
         
-        msgElement.innerHTML = `<span style='color:#f87171;font-weight:bold;'>⚔ HIT! Boss Health: ${bossHealth}/3</span>`;
+        const bossLine = getEquilibriumCrisisBossLine({
+            isCorrect: true,
+            tag: currentQuestion.tag || "",
+            type: currentQuestion.type || "",
+            objective: currentQuestion.objective || inferObjective(currentQuestion),
+            streak,
+            bossHealth,
+            responseTime
+        });
+
+        msgElement.innerHTML =
+            `<span style='color:#f87171;font-weight:bold;'>⚔ HIT! Boss Health: ${bossHealth}/3</span><br>
+             <span class='fade-out-text'>${bossLine}</span>`;
         triggerBossShake();
         
         if (bossHealth > 0) {
@@ -5100,6 +5188,20 @@ saveGameState();
             (conceptMemory[currentQuestion.tag] || 0) + rushPenalty;
     }
 
+    if(isBossRoom){
+        const bossLine = getEquilibriumCrisisBossLine({
+            isCorrect: false,
+            tag: currentQuestion.tag || "",
+            type: currentQuestion.type || "",
+            objective: currentQuestion.objective || inferObjective(currentQuestion),
+            streak,
+            bossHealth,
+            responseTime
+        });
+
+        msgElement.innerHTML = `<span class='fade-out-text'>${bossLine}</span>`;
+    }
+
     // --- IF STUDENT MISSES DURING ACTIVE REMEDIATION ---
 if(remediationState.active){
     const remediationPrompt = getRemediationQuestion(remediationState);
@@ -5115,7 +5217,7 @@ if(remediationState.active){
             currentQuestion.hint ? "💡 Hint: " + currentQuestion.hint : "";
 
         msgElement.innerHTML =
-            `<span class='fade-out-text'>Your control is still unstable. Repair the weakness before advancing.</span>`;
+            `<span class='fade-out-text'>${getRecoveryLine("miss")}</span>`;
 
         displayQuestion();
         return;
@@ -5143,10 +5245,10 @@ if (!remediationState.active && currentQuestion.tag && shouldTriggerDetour(curre
             currentQuestion.hint ? "💡 Hint: " + currentQuestion.hint : "";
 
         const remediationMessage = remediationState.careless
-            ? "You rushed the choice. Slow down and regain control."
+            ? "You rushed the signal. Slow down and read the market."
             : remediationState.slowStruggle
                 ? "The Crisis doesn't budge. Rebuild the concept before advancing."
-                : "Your control fractured. Repair the weakness before moving on.";
+                : getRecoveryLine(remediationState.stage);
 
         msgElement.innerHTML =
             `<span class='fade-out-text'>${remediationMessage}</span>`;
@@ -5535,6 +5637,11 @@ function generateCode(name, acc, streak, total){
 // This is a PRESENTATION layer, not a logic layer.
 // =============================================     
 function handleVictory() {
+    localStorage.setItem(REALM_STARTED_KEY, "true");
+    localStorage.setItem(REALM_COMPLETE_KEY, "true");
+    localStorage.setItem(REALM_STATUS_KEY, "restored");
+    localStorage.setItem(REALM_ROOM_KEY, "30");
+
     clearSavedGame();
 	bgMusic.pause();
     bossMusic.pause();
@@ -5785,7 +5892,7 @@ function sendGameData(data) {
     timestamp: new Date().toISOString(),
     runID: data.runID || localStorage.getItem("gauntletRunID") || "",
     token: data.token || "",
-    version: "Crisis-ms-telemetry-v1",
+    version: "EquilibriumCrisis-ms-telemetry-v3.5",
     userAgent: navigator.userAgent || "",
     game: data.game || "The Equilibrium Crisis",
     event: data.event || "",
@@ -5834,6 +5941,7 @@ function sendGameData(data) {
 </script>
 </body>
 </html>
+
 
 
 
