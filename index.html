@@ -425,7 +425,7 @@ h2 {
 }
 
 /* Equilibrium Crisis override */
-.market-gate #message,
+.equilibrium-crisis #message,
 .economic-realm #message {
     color: #c7ecff;
     font-size: 17px;
@@ -1673,6 +1673,358 @@ button:active {
   transform: translateY(-1px);
 }
  
+
+
+/* =========================================
+   UPGRADE: MODE SELECT / TIMER / MODAL — THE EQUILIBRIUM CRISIS
+========================================= */
+.return-menu-btn{
+    position: absolute;
+    top: 12px;
+    right: 12px;
+
+    padding: 6px 12px;
+    font-size: 12px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+
+    color: #e0f2fe;
+    background: linear-gradient(180deg, #12304f, #04101f);
+
+    border: 1px solid rgba(56,189,248,0.32);
+    border-radius: 6px;
+    cursor: pointer;
+
+    box-shadow:
+        0 0 10px rgba(56,189,248,0.22),
+        inset 0 0 7px rgba(0,0,0,0.80);
+
+    transition: all 0.15s ease;
+}
+
+.return-menu-btn:hover {
+    color: #f7d982;
+    background: linear-gradient(180deg, #1d4d73, #0b2238);
+    border-color: rgba(247,217,130,0.62);
+
+    box-shadow:
+        0 0 16px rgba(56,189,248,0.34),
+        inset 0 0 8px rgba(0,0,0,0.76);
+}
+
+.return-menu-btn:active {
+    transform: scale(0.95);
+}
+
+
+.game-modal{
+  position:fixed;
+  inset:0;
+  z-index:500;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:24px;
+  background:rgba(2,6,23,0.72);
+  backdrop-filter:blur(6px);
+}
+
+.game-modal-card{
+  width:min(520px, 100%);
+  padding:28px;
+  border-radius:18px;
+
+  background:
+    radial-gradient(circle at top,
+      rgba(56,189,248,0.16),
+      rgba(11,34,56,0.88) 48%,
+      rgba(2,6,23,0.98));
+
+  border:1px solid rgba(247,217,130,0.42);
+
+  box-shadow:
+    0 0 34px rgba(0,0,0,0.88),
+    0 0 38px rgba(56,189,248,0.24),
+    0 0 46px rgba(247,217,130,0.14),
+    inset 0 0 30px rgba(0,0,0,0.72);
+
+  text-align:center;
+}
+
+.game-modal-card h2{
+  margin:0 0 12px;
+  color:#f7d982;
+  font-size:30px;
+  letter-spacing:2px;
+  text-transform:uppercase;
+}
+
+.game-modal-card p{
+  margin:0 0 24px;
+  color:#e0f2fe;
+  font-size:18px;
+  line-height:1.45;
+}
+
+.game-modal-actions{
+  display:flex;
+  justify-content:center;
+  gap:12px;
+  flex-wrap:wrap;
+}
+
+.secondary-modal-btn{
+  color:#e0f2fe;
+  border-color:rgba(56,189,248,0.42);
+}
+	
+
+.mode-select-screen{
+  position:fixed;
+  inset:0;
+  z-index:110;
+  align-items:center;
+  justify-content:center;
+  padding:30px;
+  background:
+    linear-gradient(rgba(2,6,23,0.42), rgba(2,6,23,0.78)),
+    url('question_background_image.png');
+  background-size:cover;
+  background-position:center;
+}
+
+.mode-select-panel{
+  width:min(1100px, 100%);
+  padding:28px;
+  border-radius:20px;
+  background:rgba(2,8,18,0.84);
+  border:1px solid rgba(247,217,130,0.34);
+  box-shadow:
+    0 0 36px rgba(0,0,0,0.82),
+    0 0 44px rgba(56,189,248,0.18),
+    inset 0 0 36px rgba(0,0,0,0.62);
+  text-align:center;
+}
+
+.mode-title{
+  margin:0;
+  font-size:clamp(38px, 5vw, 68px);
+  letter-spacing:4px;
+  color:#f7d982;
+  text-shadow:
+    0 0 14px rgba(247,217,130,0.68),
+    0 0 28px rgba(56,189,248,0.24),
+    0 3px 8px rgba(0,0,0,0.9);
+}
+
+.mode-subtitle{
+  margin:8px auto 26px;
+  color:#c7ecff;
+  font-size:20px;
+}
+
+.mode-grid{
+  display:grid;
+  grid-template-columns:repeat(3, minmax(0, 1fr));
+  gap:18px;
+}
+
+.mode-card{
+  min-height:330px;
+  padding:0;
+  overflow:hidden;
+  border-radius:18px;
+  border:1px solid rgba(56,189,248,0.30);
+  background:rgba(3,10,24,0.94);
+  color:#eef6ff;
+  cursor:pointer;
+  display:flex;
+  flex-direction:column;
+  text-align:left;
+  box-shadow:
+    0 0 22px rgba(0,0,0,0.68),
+    inset 0 0 18px rgba(0,0,0,0.58);
+  transition:transform .18s ease, border-color .18s ease, box-shadow .18s ease;
+}
+
+.mode-card:hover{
+  transform:translateY(-6px) scale(1.02);
+  border-color:rgba(247,217,130,0.78);
+  box-shadow:
+    0 0 28px rgba(56,189,248,0.32),
+    0 0 38px rgba(247,217,130,0.20),
+    inset 0 0 18px rgba(0,0,0,0.62);
+}
+
+.mode-card img{
+  width:100%;
+  height:240px;
+  object-fit:cover;
+  border-bottom:1px solid rgba(247,217,130,0.22);
+  background:linear-gradient(180deg, rgba(11,34,56,0.95), rgba(2,6,23,0.98));
+}
+
+.mode-card-title{
+  display:block;
+  padding:18px 16px 20px;
+  font-size:22px;
+  font-weight:700;
+  letter-spacing:1px;
+  color:#f7d982;
+  text-align:center;
+}
+
+.mode-card-text{
+  display:block;
+  padding:8px 22px 24px;
+  font-size:15px;
+  line-height:1.35;
+  color:rgba(224,242,254,0.88);
+  text-align:left;
+}
+	
+.mode-back-btn{
+  margin-top:18px;
+  min-width:140px;
+}
+
+.sr-only{
+  position:absolute;
+  width:1px;
+  height:1px;
+  padding:0;
+  margin:-1px;
+  overflow:hidden;
+  clip:rect(0, 0, 0, 0);
+  white-space:nowrap;
+  border:0;
+}
+
+.timed-mode-hud{
+  margin: 8px auto 12px;
+  padding: 8px 14px;
+  width: fit-content;
+  border-radius: 999px;
+  align-items: center;
+  gap: 12px;
+  background: linear-gradient(180deg, rgba(11,34,56,0.88), rgba(2,6,23,0.96));
+  border: 1px solid rgba(247,217,130,0.48);
+  box-shadow:
+    0 0 16px rgba(56,189,248,0.24),
+    0 0 26px rgba(247,217,130,0.14),
+    inset 0 0 12px rgba(0,0,0,0.72);
+}
+
+.timer-label{
+  font-size: 12px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #c7ecff;
+}
+
+.timer-display{
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: #f7d982;
+  text-shadow:
+    0 0 10px rgba(247,217,130,0.62),
+    0 0 18px rgba(56,189,248,0.24);
+}
+
+.timer-warning{
+  animation: timerWarningPulse .75s ease-in-out infinite alternate;
+}
+
+@keyframes timerWarningPulse{
+  from{ transform: scale(1); }
+  to{
+    transform: scale(1.08);
+    text-shadow:
+      0 0 14px rgba(248,113,113,0.90),
+      0 0 24px rgba(247,217,130,0.42);
+  }
+}
+
+@media(max-width:900px){
+  .mode-grid{ grid-template-columns:1fr 1fr; }
+}
+
+@media(max-width:560px){
+  .mode-select-screen{
+    padding:14px;
+    align-items:flex-start;
+    overflow-y:auto;
+  }
+
+  .mode-grid{ grid-template-columns:1fr; }
+  .mode-card{ min-height:250px; }
+  .mode-card img{ height:145px; }
+}
+
+/* =========================================
+   13. SOUND ON/OFF — THE EQUILIBRIUM CRISIS
+========================================= */
+
+.sound-toggle{
+  position:fixed;
+  right:28px;
+  bottom:24px;
+  z-index:999;
+
+  padding:10px 13px;
+  border-radius:999px;
+
+  border:1px solid rgba(56,189,248,0.30);
+
+  background: linear-gradient(
+      180deg,
+      rgba(11,34,56,0.72),
+      rgba(2,6,23,0.82)
+  );
+
+  color:rgba(224,242,254,0.78);
+
+  cursor:pointer;
+  font-size:11px;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+
+  box-shadow:
+      0 0 18px rgba(0,0,0,.48),
+      0 0 18px rgba(56,189,248,0.14),
+      inset 0 0 10px rgba(0,0,0,0.72);
+
+  backdrop-filter: blur(3px);
+
+  transition:
+      color .18s ease,
+      border-color .18s ease,
+      background .18s ease,
+      box-shadow .18s ease,
+      transform .18s ease;
+}
+
+.sound-toggle:hover{
+  color:#f7d982;
+  border-color:rgba(247,217,130,0.56);
+
+  background: linear-gradient(
+      180deg,
+      rgba(19,57,86,0.84),
+      rgba(4,14,28,0.90)
+  );
+
+  box-shadow:
+      0 0 22px rgba(0,0,0,.52),
+      0 0 20px rgba(56,189,248,0.22),
+      0 0 26px rgba(247,217,130,0.14),
+      inset 0 0 10px rgba(0,0,0,0.74);
+
+  transform: translateY(-1px);
+}
+ 
+
 </style>
 </head>
 
@@ -1747,14 +2099,50 @@ Respect structure strictly.
     <h1 class="title">THE EQUILIBRIUM CRISIS</h1>
     <h2 class="subtitle">Markets Under Pressure.</h2>
     <input id="emailInput" type="email" placeholder="Enter your school email" class="name-input">
-    <button class="start-btn" onclick="startNewRun()">ENTER THE CRISIS</button>
+    <button class="start-btn" onclick="showModeSelect()">ENTER THE CRISIS</button>
 	<button id="continueRunBtn" class="start-btn secondary-start-btn" onclick="continueSavedRun()" style="display:none;">
-    CONTINUE CRISIS RUN</button>
+    CONTINUE STANDARD RUN</button>
+  </div>
+</div>
+
+<div id="modeSelectScreen" class="mode-select-screen" style="display:none;">
+  <div class="mode-select-panel">
+    <h1 class="mode-title">CHOOSE YOUR BATTLE</h1>
+    <p class="mode-subtitle">Select how you want to enter The Equilibrium Crisis.</p>
+
+    <div class="mode-grid">
+<button class="mode-card" onclick="startSelectedMode('standard')" aria-label="Standard Campaign. Full 30-room run with bosses, artifacts, setbacks, save and resume status, and realm progress.">
+  <img src="mode_standard.png" alt="" aria-hidden="true">
+  <span class="mode-card-title">Standard Campaign</span>
+  <span class="mode-card-text">Full 30-room run with bosses, artifacts, setbacks, and realm progress.</span>
+</button>
+
+<button class="mode-card" onclick="startSelectedMode('timed')" aria-label="Timed Trial. Ten minute run with visible countdown, normal setbacks, rapid guessing penalties, and results saved separately.">
+  <img src="mode_timed.png" alt="" aria-hidden="true">
+  <span class="mode-card-title">Timed Trial</span>
+  <span class="mode-card-text">Ten minutes. Correct answers advance. Misses push you back.</span>
+</button>
+
+<button class="mode-card" onclick="startSelectedMode('exam')" aria-label="Exam Drill. No bosses, no artifacts, no realm progress. Just adaptive practice.">
+  <img src="mode_exam.png" alt="" aria-hidden="true">
+  <span class="mode-card-title">Exam Drill</span>
+  <span class="mode-card-text">No bosses. No artifacts. No realm progress. Just adaptive practice.</span>
+</button>
+
+<button class="mode-card" onclick="startSelectedMode('legendary')" aria-label="Legendary Mode. Full 30-room campaign using mastery-level multi-step questions with close answer choices.">
+  <img src="mode_legendary.png" alt="" aria-hidden="true">
+  <span class="mode-card-title">Legendary Mode</span>
+  <span class="mode-card-text">Full campaign. Legendary-only route when a pool exists. No mercy.</span>
+</button>
+    </div>
+
+    <button class="mode-back-btn" onclick="returnToTitleScreen()">BACK</button>
   </div>
 </div>
 
 <div class="dungeon-container">
     <button class="fullscreenBtn" onclick="goFullscreen()">FULLSCREEN</button>
+    <button id="returnMenuBtn" class="return-menu-btn" onclick="confirmReturnToModeMenu()">BATTLE MENU</button>
     <button id="soundToggle" class="sound-toggle" onclick="toggleGameSound()" aria-label="Toggle sound">Sound On</button>
 
 <!-- =========================================
@@ -1823,6 +2211,12 @@ DO NOT REMOVE:
             </div>
 
             <div id="streakDisplay"></div>
+
+            <div id="timedModeHud" class="timed-mode-hud" style="display:none;">
+                <span class="timer-label">Timed Trial</span>
+                <span id="timerDisplay" class="timer-display">10:00</span>
+            </div>
+
             <p id="bossMessage"></p>
 
             <div id="questionContainer">
@@ -1843,6 +2237,19 @@ DO NOT REMOVE:
         </div>
     </div>
 </div>
+</div>
+
+
+<div id="gameModal" class="game-modal" style="display:none;" role="dialog" aria-modal="true" aria-labelledby="gameModalTitle">
+  <div class="game-modal-card">
+    <h2 id="gameModalTitle">Crisis Warning</h2>
+    <p id="gameModalText"></p>
+
+    <div class="game-modal-actions">
+      <button id="gameModalConfirm" class="continue-btn">Continue</button>
+      <button id="gameModalCancel" class="continue-btn secondary-modal-btn" style="display:none;">Cancel</button>
+    </div>
+  </div>
 </div>
 
 <!-- =========================================
@@ -2015,19 +2422,23 @@ let usedQuestions = {
     medium: [],
     hard: [],
     elite: [],
+    legendary: [],
     easyBoss: [],
     mediumBoss: [],
     finalBoss: [],
+    legendaryBoss: [],
 };
 let questionHistory = {
     easy: [],
     medium: [],
     hard: [],
     elite: [],
+    legendary: [],
     calculation: [],
     easyBoss: [],
     mediumBoss: [],
     finalBoss: [],
+    legendaryBoss: [],
 };
 
 const SAVE_KEY = "equilibriumCrisisSave_v1";
@@ -2037,7 +2448,44 @@ const REALM_COMPLETE_KEY = "economicRealm_equilibriumCrisis_complete";
 const REALM_STATUS_KEY = "economicRealm_equilibriumCrisis_status";
 const REALM_ROOM_KEY = "economicRealm_equilibriumCrisis_room";
 
+let gameMode = "standard";
+let timedModeDurationMs = 10 * 60 * 1000;
+let timedModeEndTime = null;
+let timedModeTimerInterval = null;
+let timedHighestRoom = 1;
+let timedSetbacks = 0;
+
+function modeAllowsSave(){
+    return gameMode === "standard" || gameMode === "legendary";
+}
+
+function modeAllowsRealmProgress(){
+    return gameMode === "standard";
+}
+
+function getSaveKey(){
+    return `${SAVE_KEY}_${gameMode || "standard"}`;
+}
+
+function isBossRoomForMode(r){
+    if(gameMode === "exam") return false;
+    if(gameMode === "timed") return false;
+    if(gameMode === "bossRush") return true;
+    if(gameMode === "legendary") return r === 10 || r === 20 || r === 30;
+    return r === 10 || r === 20 || r === 30;
+}
+
+function getModeDisplayName(){
+    if(gameMode === "timed") return "Timed Trial";
+    if(gameMode === "exam") return "Exam Drill";
+    if(gameMode === "bossRush") return "Boss Rush";
+    if(gameMode === "legendary") return "Legendary Mode";
+    return "Standard Campaign";
+}
+
 function saveGameState(){
+    if(!modeAllowsSave()) return;
+
     const saveData = {
         room,
         bossHealth,
@@ -2049,6 +2497,7 @@ function saveGameState(){
         username,
         studentEmail,
         runID,
+        gameMode,
         conceptMemory,
         masteryState,
         adaptiveMode,
@@ -2056,9 +2505,6 @@ function saveGameState(){
         lastTypes,
         usedQuestions,
         questionHistory,
-        rapidGuessHistory,
-        rapidGuessWarnings,
-        rapidGuessLocked,
         savedAt: Date.now(),
 
         artifacts: {
@@ -2068,11 +2514,14 @@ function saveGameState(){
         }
     };
 
-    localStorage.setItem(SAVE_KEY, JSON.stringify(saveData));
+    localStorage.setItem(getSaveKey(), JSON.stringify(saveData));
     localStorage.setItem("gauntletRoom", String(room));
-    localStorage.setItem(REALM_STARTED_KEY, "true");
-    localStorage.setItem(REALM_STATUS_KEY, "contested");
-    localStorage.setItem(REALM_ROOM_KEY, String(room));
+
+    if(modeAllowsRealmProgress()){
+	    localStorage.setItem(REALM_STARTED_KEY, "true");
+	    localStorage.setItem(REALM_STATUS_KEY, "contested");
+	    localStorage.setItem(REALM_ROOM_KEY, String(room));
+    }
 
     const autosave = document.getElementById("autosave");
     if(autosave){
@@ -2081,7 +2530,7 @@ function saveGameState(){
 }
 
 function loadSavedGame(){
-    const rawSave = localStorage.getItem(SAVE_KEY);
+    const rawSave = localStorage.getItem(getSaveKey());
     if(!rawSave) return false;
 
     try {
@@ -2098,19 +2547,16 @@ function loadSavedGame(){
         username = saveData.username || username || "";
         studentEmail = saveData.studentEmail || studentEmail || "";
         runID = saveData.runID || runID || "";
+        gameMode = saveData.gameMode || gameMode || "standard";
 
         conceptMemory = saveData.conceptMemory || {};
         masteryState = saveData.masteryState || { byTag: {}, byObjective: {}, bySkill: {}, recent: [] };
-        if(!masteryState.bySkill) masteryState.bySkill = {};
         adaptiveMode = saveData.adaptiveMode || "support";
         tagHistory = saveData.tagHistory || [];
         lastTypes = saveData.lastTypes || [];
 
         usedQuestions = saveData.usedQuestions || usedQuestions;
         questionHistory = saveData.questionHistory || questionHistory;
-        rapidGuessHistory = saveData.rapidGuessHistory || [];
-        rapidGuessWarnings = Number(saveData.rapidGuessWarnings || 0);
-        rapidGuessLocked = !!saveData.rapidGuessLocked;
 
         if(saveData.artifacts?.vaultShard) localStorage.setItem("vaultShard", "true");
         if(saveData.artifacts?.vaultGauge) localStorage.setItem("vaultGauge", "true");
@@ -2119,17 +2565,20 @@ function loadSavedGame(){
         return true;
     } catch(error){
         console.warn("Saved game could not be loaded:", error);
-        localStorage.removeItem(SAVE_KEY);
+        localStorage.removeItem(getSaveKey());
         return false;
     }
 }
 
 function clearSavedGame(){
-    localStorage.removeItem(SAVE_KEY);
-    localStorage.removeItem("gauntletRoom");
-    localStorage.removeItem("vaultShard");
-    localStorage.removeItem("vaultGauge");
-    localStorage.removeItem("vaultSeal");
+    localStorage.removeItem(getSaveKey());
+
+    if(modeAllowsSave()){
+        localStorage.removeItem("gauntletRoom");
+        localStorage.removeItem("vaultShard");
+        localStorage.removeItem("vaultGauge");
+        localStorage.removeItem("vaultSeal");
+    }
 }
 
 function generatePseudonymFromEmail(email) {
@@ -2271,10 +2720,11 @@ function inferObjective(question){
 
 // =============================================
     // THE EQUILIBRIUM CRISIS OBJECTIVE INFERENCE
-    // Chapters 1, 2, 4, 6
+    // Chapters 1, 2, 4, 6, 24, 25, 26, 29
     // Tradeoffs, opportunity cost, marginal thinking,
     // incentives, models, PPF, markets, supply/demand,
-    // price controls, taxes, and tax incidence
+    // price controls, taxes, tax incidence,
+    // GDP, CPI, growth/productivity, and unemployment
     // =============================================
 
     // -----------------------------
@@ -2508,6 +2958,187 @@ function inferObjective(question){
             return "LO6.5_elasticity_tax_incidence";
         }
         return "LO6.5_tax_incidence";
+    }
+
+
+    // -----------------------------
+    // CHAPTER 24 — Measuring a Nation's Income
+    // -----------------------------
+
+    if(tag === "gdp_income_expenditure"){
+        return "LO24.1";
+    }
+
+    if(tag === "gdp_definition"){
+        return "LO24.2";
+    }
+
+    if(tag === "gdp_components"){
+        return "LO24.3";
+    }
+
+    if(tag === "real_nominal_gdp"){
+        return "LO24.4";
+    }
+
+    if(tag === "gdp_wellbeing"){
+        return "LO24.5";
+    }
+
+    // Question-text backup for Chapter 24
+    if(q.includes("income equals expenditure") || q.includes("total income") || q.includes("total expenditure") || q.includes("income-expenditure") || q.includes("income and expenditure")){
+        return "LO24.1";
+    }
+
+    if(q.includes("gdp") || q.includes("gross domestic product") || q.includes("final good") || q.includes("intermediate good") || q.includes("value added") || q.includes("current production") || q.includes("used good")){
+        if(q.includes("nominal gdp") || q.includes("real gdp") || q.includes("gdp deflator") || q.includes("base-year") || q.includes("current-year prices")){
+            return "LO24.4";
+        }
+
+        if(q.includes("consumption") || q.includes("investment") || q.includes("government purchases") || q.includes("net exports") || q.includes("exports") || q.includes("imports") || q.includes("inventory")){
+            return "LO24.3";
+        }
+
+        if(q.includes("well-being") || q.includes("well being") || q.includes("leisure") || q.includes("pollution") || q.includes("environment") || q.includes("quality of life") || q.includes("inequality")){
+            return "LO24.5";
+        }
+
+        return "LO24.2";
+    }
+
+    // -----------------------------
+    // CHAPTER 25 — Measuring the Cost of Living
+    // -----------------------------
+
+    if(tag === "cpi_inflation"){
+        return "LO25.1";
+    }
+
+    if(tag === "cpi_bias"){
+        return "LO25.2";
+    }
+
+    if(tag === "cpi_vs_deflator"){
+        return "LO25.3";
+    }
+
+    if(tag === "inflation_adjustment"){
+        return "LO25.4";
+    }
+
+    if(tag === "interest_inflation"){
+        return "LO25.5";
+    }
+
+    // Question-text backup for Chapter 25
+    if(q.includes("consumer price index") || q.includes("cpi") || q.includes("inflation rate") || q.includes("basket cost") || q.includes("fixed basket")){
+        if(q.includes("substitution") || q.includes("quality") || q.includes("new goods") || q.includes("cost of living") || q.includes("overstate")){
+            return "LO25.2";
+        }
+
+        if(q.includes("gdp deflator") || q.includes("imported") || q.includes("domestic production") || q.includes("current domestic production")){
+            return "LO25.3";
+        }
+
+        return "LO25.1";
+    }
+
+    if(q.includes("today's dollars") || q.includes("today’s dollars") || q.includes("purchasing power") || q.includes("adjusted for inflation") || q.includes("price level today") || q.includes("price index ratio")){
+        return "LO25.4";
+    }
+
+    if(q.includes("nominal interest") || q.includes("real interest") || q.includes("real return") || q.includes("borrower") || q.includes("lender")){
+        return "LO25.5";
+    }
+
+    // -----------------------------
+    // CHAPTER 26 — Production and Growth
+    // -----------------------------
+
+    if(tag === "growth_differences"){
+        return "LO26.1";
+    }
+
+    if(tag === "productivity"){
+        return "LO26.2";
+    }
+
+    if(tag === "productivity_factors" || tag === "diminishing_returns" || tag === "catch_up_growth"){
+        return "LO26.3";
+    }
+
+    if(tag === "growth_policy"){
+        return "LO26.4";
+    }
+
+    // Question-text backup for Chapter 26
+    if(q.includes("rule of 70") || q.includes("double") || q.includes("growth rate") || q.includes("real gdp per person") || q.includes("living standards across countries")){
+        return "LO26.1";
+    }
+
+    if(q.includes("productivity") || q.includes("output per worker") || q.includes("output per hour") || q.includes("output divided by labor")){
+        return "LO26.2";
+    }
+
+    if(q.includes("physical capital") || q.includes("human capital") || q.includes("natural resources") || q.includes("technological knowledge") || q.includes("diminishing returns") || q.includes("catch-up") || q.includes("catch up") || q.includes("capital per worker")){
+        return "LO26.3";
+    }
+
+    if(q.includes("property rights") || q.includes("political stability") || q.includes("saving and investment") || q.includes("foreign investment") || q.includes("education") || q.includes("research and development") || q.includes("free trade") || q.includes("growth policy")){
+        return "LO26.4";
+    }
+
+    // -----------------------------
+    // CHAPTER 29 — Unemployment
+    // -----------------------------
+
+    if(tag === "labor_force_stats"){
+        return "LO29.1";
+    }
+
+    if(tag === "employment_categories"){
+        return "LO29.2";
+    }
+
+    if(tag === "unemployment_types"){
+        return "LO29.3";
+    }
+
+    if(tag === "labor_market_policy"){
+        return "LO29.4";
+    }
+
+    if(tag === "natural_unemployment"){
+        return "LO29.5";
+    }
+
+    if(tag === "labor_market_synthesis"){
+        return "LO29.1_LO29.2_LO29.5";
+    }
+
+    if(tag === "macro_integration"){
+        return "integrated_macro_review";
+    }
+
+    // Question-text backup for Chapter 29
+    if(q.includes("labor force participation") || q.includes("unemployment rate") || q.includes("labor force equals") || q.includes("employed plus unemployed")){
+        return "LO29.1";
+    }
+
+    if(q.includes("employed") || q.includes("unemployed") || q.includes("not in the labor force") || q.includes("discouraged worker") || q.includes("part-time") || q.includes("underemployment")){
+        return "LO29.2";
+    }
+
+    if(q.includes("frictional") || q.includes("structural") || q.includes("cyclical") || q.includes("job search") || q.includes("skill mismatch") || q.includes("recession")){
+        return "LO29.3";
+    }
+
+    if(q.includes("minimum wage") || q.includes("unemployment insurance") || q.includes("union") || q.includes("efficiency wage") || q.includes("labor surplus") || q.includes("wage floor")){
+        return "LO29.4";
+    }
+
+    if(q.includes("natural rate") || q.includes("actual unemployment") || q.includes("cyclical unemployment") || q.includes("normal unemployment")){
+        return "LO29.5";
     }
 
     // -----------------------------
@@ -3261,8 +3892,169 @@ if (savedEmail && emailInput) {
     emailInput.value = savedEmail;
 }
 
-function hasSavedGame(){
-    return !!localStorage.getItem(SAVE_KEY);
+function hasSavedGame(mode = "standard"){
+    return !!localStorage.getItem(`${SAVE_KEY}_${mode}`);
+}
+
+function validateAndStoreEmailForModeSelect(){
+    let inputEmail = document.getElementById("emailInput").value.trim().toLowerCase();
+
+    if (!inputEmail) {
+        alert("An email is required to enter the Crisis.");
+        return false;
+    }
+
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!emailPattern.test(inputEmail)) {
+        alert("Enter a valid email address.");
+        return false;
+    }
+
+    studentEmail = inputEmail;
+    username = generatePseudonymFromEmail(studentEmail);
+
+    localStorage.setItem("gauntletEmail", studentEmail);
+    localStorage.setItem("gauntletUser", username);
+
+    return true;
+}
+
+function showModeSelect(){
+    if(!validateAndStoreEmailForModeSelect()) return;
+
+    document.getElementById("startScreen").style.display = "none";
+    const modeScreen = document.getElementById("modeSelectScreen");
+    if(modeScreen) modeScreen.style.display = "flex";
+}
+
+function returnToTitleScreen(){
+    const modeScreen = document.getElementById("modeSelectScreen");
+    if(modeScreen) modeScreen.style.display = "none";
+    document.getElementById("startScreen").style.display = "flex";
+    showContinueButtonIfSaved();
+}
+
+function startSelectedMode(mode){
+    gameMode = mode || "standard";
+    localStorage.setItem("equilibriumCrisisCurrentMode", gameMode);
+
+    const modeScreen = document.getElementById("modeSelectScreen");
+    if(modeScreen) modeScreen.style.display = "none";
+
+    if(gameMode === "standard"){
+        startGame(false);
+        return;
+    }
+
+    resetRunStateForNewMode();
+    startGame(false);
+}
+
+function confirmReturnToModeMenu(){
+    showGameModal({
+        title: "Return to Battle Menu?",
+        text: "Standard Campaign progress will be saved. Timed Trial and Exam Drill attempts will end.",
+        confirmText: "Return",
+        cancelText: "Stay",
+        onConfirm: function(){
+            if(gameMode === "standard"){
+                saveGameState();
+            }
+
+            if(gameMode === "timed"){
+                endTimedAttemptEarly();
+                return;
+            }
+
+            returnToModeSelectFromRun();
+        }
+    });
+}
+
+let activeModalConfirmAction = null;
+let activeModalCancelAction = null;
+
+function showGameModal({
+    title = "Signal Warning",
+    text = "",
+    confirmText = "Continue",
+    cancelText = "",
+    onConfirm = null,
+    onCancel = null
+} = {}){
+    const modal = document.getElementById("gameModal");
+    const titleEl = document.getElementById("gameModalTitle");
+    const textEl = document.getElementById("gameModalText");
+    const confirmBtn = document.getElementById("gameModalConfirm");
+    const cancelBtn = document.getElementById("gameModalCancel");
+
+    if(!modal || !titleEl || !textEl || !confirmBtn || !cancelBtn){
+        console.warn("Game modal elements are missing.");
+        return;
+    }
+
+    activeModalConfirmAction = onConfirm;
+    activeModalCancelAction = onCancel;
+
+    titleEl.innerText = title;
+    textEl.innerText = text;
+    confirmBtn.innerText = confirmText;
+
+    if(cancelText){
+        cancelBtn.innerText = cancelText;
+        cancelBtn.style.display = "inline-block";
+    } else {
+        cancelBtn.style.display = "none";
+    }
+
+    modal.style.display = "flex";
+
+    confirmBtn.onclick = function(){
+    const action = activeModalConfirmAction;
+    closeGameModal();
+
+    if(typeof action === "function"){
+        action();
+    }
+};
+
+cancelBtn.onclick = function(){
+    const action = activeModalCancelAction;
+    closeGameModal();
+
+    if(typeof action === "function"){
+        action();
+    }
+};
+}
+
+function closeGameModal(){
+    const modal = document.getElementById("gameModal");
+    if(modal) modal.style.display = "none";
+
+    activeModalConfirmAction = null;
+    activeModalCancelAction = null;
+}
+
+function endTimedAttemptEarly(){
+    stopTimedModeClock();
+
+    const accuracy = totalAttempts > 0
+        ? Math.round((correctAnswers / totalAttempts) * 100)
+        : 0;
+
+    localStorage.setItem("equilibriumCrisisTimedLastRoom", String(room));
+    localStorage.setItem("equilibriumCrisisTimedLastAccuracy", String(accuracy));
+    localStorage.setItem("equilibriumCrisisTimedLastAttempts", String(totalAttempts));
+    localStorage.setItem("equilibriumCrisisTimedLastStreak", String(maxStreak));
+
+    const bestRoom = Number(localStorage.getItem("equilibriumCrisisTimedBestRoom") || 0);
+    if(room > bestRoom){
+        localStorage.setItem("equilibriumCrisisTimedBestRoom", String(room));
+    }
+
+    returnToModeSelectFromRun();
 }
 
 function showContinueButtonIfSaved(){
@@ -3273,11 +4065,13 @@ function showContinueButtonIfSaved(){
 }
 
 function startNewRun(){
+    gameMode = "standard";
     clearSavedGame();
     startGame(false);
 }
 
 function continueSavedRun(){
+    gameMode = "standard";
     startGame(true);
 }
 
@@ -3327,7 +4121,7 @@ function startGame(shouldResume = false) {
     }
 
    studentEmail = inputEmail;
-username = generatePseudonymFromEmail(studentEmail);
+   username = generatePseudonymFromEmail(studentEmail);
 
 const hasSavedRun = shouldResume ? loadSavedGame() : false;
 
@@ -3339,10 +4133,12 @@ if(!hasSavedRun){
 localStorage.setItem("gauntletEmail", studentEmail);
 localStorage.setItem("gauntletUser", username);
 localStorage.setItem("gauntletRunID", runID);
-localStorage.setItem(REALM_STARTED_KEY, "true");
-localStorage.setItem(REALM_STATUS_KEY, "contested");
-localStorage.setItem(REALM_ROOM_KEY, String(room || 1));
-
+if(modeAllowsRealmProgress()){
+    localStorage.setItem(REALM_STARTED_KEY, "true");
+    localStorage.setItem(REALM_STATUS_KEY, "contested");
+    localStorage.setItem(REALM_ROOM_KEY, String(room || 1));
+}
+	
 sendGameData({
     runID: runID,
     game: "The Equilibrium Crisis",
@@ -3375,19 +4171,26 @@ if(!hasSavedRun){
 	rapidGuessWarnings = 0;
 	rapidGuessLocked = false;
 
-    localStorage.removeItem("gauntletRoom");
-	localStorage.removeItem("vaultShard");
-	localStorage.removeItem("vaultGauge");
-	localStorage.removeItem("vaultSeal");
+    if(modeAllowsSave()){
+        localStorage.removeItem("gauntletRoom");
+	    localStorage.removeItem("vaultShard");
+	    localStorage.removeItem("vaultGauge");
+	    localStorage.removeItem("vaultSeal");
+    }
+	if(modeAllowsRealmProgress()){
+	    localStorage.removeItem(REALM_COMPLETE_KEY);
+	    localStorage.setItem(REALM_STATUS_KEY, "contested");
+	    localStorage.setItem(REALM_ROOM_KEY, "1");
+	}
 	
     questionHistory = {
-        easy: [], medium: [], hard: [], elite: [], calculation: [],
-        easyBoss: [], mediumBoss: [], finalBoss: []
+        easy: [], medium: [], hard: [], elite: [], legendary: [], calculation: [],
+        easyBoss: [], mediumBoss: [], finalBoss: [], legendaryBoss: []
     };
 
     usedQuestions = {
-        easy: [], medium: [], hard: [], elite: [],
-        easyBoss: [], mediumBoss: [], finalBoss: []
+        easy: [], medium: [], hard: [], elite: [], legendary: [],
+        easyBoss: [], mediumBoss: [], finalBoss: [], legendaryBoss: []
     };
 }
     
@@ -3396,9 +4199,14 @@ if(!hasSavedRun){
 // =============================================
 // Shows main game elements and restores vault visuals
     document.getElementById("startScreen").style.display = "none";
+    const modeScreen = document.getElementById("modeSelectScreen");
+    if(modeScreen) modeScreen.style.display = "none";
+	document.querySelector(".top-panel").style.display = "flex";
+    document.getElementById("gameShell").style.display = "flex";
     document.getElementById("gameBox").style.display = "block";
     document.getElementById("artifactVault").style.display = "block";
     document.querySelectorAll(".torch").forEach(t => t.style.display = "block");
+
 
    // =============================================
    // VAULT RESTORE SYSTEM — SAFE WITH MATCHING IDS
@@ -3419,11 +4227,282 @@ if(localStorage.getItem("vaultSeal")){
 }
   
 // Start game loop: music + timer + first question
+    initializeRunForMode(gameMode);
     bgMusic.play().catch(e => console.log("Audio started"));
     startTime = Date.now(); 
     loadQuestion();
 }
 	 
+
+function resetRunStateForNewMode(){
+    room = 1;
+    bossHealth = 3;
+    bossCheckpoint = 1;
+    streak = 0;
+    maxStreak = 0;
+    totalAttempts = 0;
+    correctAnswers = 0;
+    bossPool = [];
+    if(typeof calcBag !== "undefined") calcBag = [];
+    conceptMemory = {};
+    masteryState = { byTag: {}, byObjective: {}, bySkill: {}, recent: [] };
+    tagHistory = [];
+    lastTypes = [];
+    adaptiveMode = "support";
+    resetRemediationState();
+    rapidGuessHistory = [];
+    rapidGuessWarnings = 0;
+    rapidGuessLocked = false;
+    timedHighestRoom = 1;
+    timedSetbacks = 0;
+
+    questionHistory = {
+        easy: [], medium: [], hard: [], elite: [], legendary: [], calculation: [],
+        easyBoss: [], mediumBoss: [], finalBoss: [], legendaryBoss: []
+    };
+
+    usedQuestions = {
+        easy: [], medium: [], hard: [], elite: [], legendary: [],
+        easyBoss: [], mediumBoss: [], finalBoss: [], legendaryBoss: []
+    };
+}
+
+function initializeRunForMode(mode){
+    gameMode = mode || "standard";
+
+    const autosave = document.getElementById("autosave");
+    if(autosave){
+        autosave.innerText = gameMode === "timed"
+            ? "⏱ Timed Trial Active"
+            : gameMode === "exam"
+                ? "✎ Exam Drill Active"
+                : gameMode === "legendary"
+                    ? "🔥 Legendary Mode Active"
+                    : gameMode === "bossRush"
+                        ? "⚔ Boss Rush Active"
+                        : "💾 Crisis Route Preserved";
+    }
+
+    if(gameMode === "timed"){
+        startTimedModeClock();
+    } else {
+        stopTimedModeClock();
+    }
+}
+
+function startTimedModeClock(){
+    timedModeEndTime = Date.now() + timedModeDurationMs;
+
+    const hud = document.getElementById("timedModeHud");
+    if(hud) hud.style.display = "flex";
+
+    updateTimedModeClock();
+
+    if(timedModeTimerInterval){
+        clearInterval(timedModeTimerInterval);
+    }
+
+    timedModeTimerInterval = setInterval(updateTimedModeClock, 250);
+}
+
+function stopTimedModeClock(){
+    if(timedModeTimerInterval){
+        clearInterval(timedModeTimerInterval);
+        timedModeTimerInterval = null;
+    }
+
+    const hud = document.getElementById("timedModeHud");
+    if(hud) hud.style.display = "none";
+
+    const timerDisplay = document.getElementById("timerDisplay");
+    if(timerDisplay){
+        timerDisplay.classList.remove("timer-warning");
+        timerDisplay.innerText = "10:00";
+    }
+}
+
+function updateTimedModeClock(){
+    if(gameMode !== "timed" || !timedModeEndTime) return;
+
+    const remainingMs = Math.max(0, timedModeEndTime - Date.now());
+    const totalSeconds = Math.ceil(remainingMs / 1000);
+    const minutes = Math.floor(totalSeconds / 60);
+    const seconds = totalSeconds % 60;
+
+    const timerDisplay = document.getElementById("timerDisplay");
+    if(timerDisplay){
+        timerDisplay.innerText = `${minutes}:${String(seconds).padStart(2, "0")}`;
+        timerDisplay.classList.toggle("timer-warning", remainingMs <= 60 * 1000);
+    }
+
+    if(remainingMs <= 0){
+        endTimedModeRun();
+    }
+}
+
+function endTimedModeRun(){
+    if(gameMode !== "timed") return;
+
+    stopTimedModeClock();
+    gameMode = "timed-complete";
+
+    const accuracy = totalAttempts > 0
+        ? Math.round((correctAnswers / totalAttempts) * 100)
+        : 0;
+
+    const bestRoom = Number(localStorage.getItem("equilibriumCrisisTimedBestRoom") || 0);
+    if(timedHighestRoom > bestRoom){
+        localStorage.setItem("equilibriumCrisisTimedBestRoom", String(timedHighestRoom));
+    }
+
+    localStorage.setItem("equilibriumCrisisTimedLastRoom", String(room));
+    localStorage.setItem("equilibriumCrisisTimedLastHighestRoom", String(timedHighestRoom));
+    localStorage.setItem("equilibriumCrisisTimedLastAccuracy", String(accuracy));
+    localStorage.setItem("equilibriumCrisisTimedLastAttempts", String(totalAttempts));
+    localStorage.setItem("equilibriumCrisisTimedLastStreak", String(maxStreak));
+    localStorage.setItem("equilibriumCrisisTimedLastSetbacks", String(timedSetbacks));
+
+    sendGameData({
+        runID: runID,
+        game: "The Equilibrium Crisis",
+        event: "timed_complete",
+        user: username,
+        email: studentEmail,
+        room: room,
+        questionId: 0,
+        correct: 1,
+        tag: "",
+        type: "",
+        objective: "",
+        responseTime: 0,
+        attempt: totalAttempts,
+        streak: streak,
+        elapsedTime: startTime ? (Date.now() - startTime) : 0,
+        adaptiveMode: "timed_complete",
+        totalTime: timedModeDurationMs,
+        accuracy: accuracy / 100,
+        maxStreak: maxStreak,
+        totalAttempts: totalAttempts
+    });
+
+    document.getElementById("bossMessage").innerText = "";
+    document.getElementById("formulaHint").innerText = "";
+    document.getElementById("artifactDrop").style.display = "none";
+    document.getElementById("questionImageBox").style.display = "none";
+
+    document.getElementById("question").innerHTML = `
+        <span class="boss-title">TIME EXPIRED</span>
+        <div class="boss-q">
+            You reached as far as Room ${timedHighestRoom}.<br><br>
+            Final Room: ${room}<br>
+            Accuracy: ${accuracy}%<br>
+            Total Attempts: ${totalAttempts}<br>
+            Best Streak: ${maxStreak}<br>
+            Setbacks Taken: ${timedSetbacks}
+        </div>
+    `;
+
+    document.getElementById("answers").innerHTML = `
+        <button class="continue-btn" onclick="restartTimedMode()">Retry Timed Trial</button>
+        <button class="continue-btn" onclick="returnToModeSelectFromRun()">Choose Another Crisis Run</button>
+    `;
+
+    document.getElementById("message").innerText = "The trial ends. The market remembers.";
+}
+
+function restartTimedMode(){
+    gameMode = "timed";
+    resetRunStateForNewMode();
+    startSelectedMode("timed");
+}
+
+function returnToModeSelectFromRun(){
+    stopTimedModeClock();
+    document.getElementById("gameBox").style.display = "none";
+    document.getElementById("artifactVault").style.display = "none";
+    document.getElementById("modeSelectScreen").style.display = "flex";
+	document.querySelector(".top-panel").style.display = "none";
+	document.getElementById("gameShell").style.display = "none";
+}
+
+function getDifficultyForMode(){
+    if(gameMode === "exam" || gameMode === "timed"){
+        return (room <= 10) ? "easy"
+            : (room <= 20) ? "medium"
+            : "hard";
+    }
+
+    if(gameMode === "legendary"){
+        return (room === 10 || room === 20 || room === 30)
+            ? "legendaryBoss"
+            : "legendary";
+    }
+
+    if(gameMode === "bossRush"){
+        return (room <= 10) ? "easyBoss"
+            : (room <= 20) ? "mediumBoss"
+            : "finalBoss";
+    }
+
+    return (room <= 9) ? "easy"
+         : (room === 10) ? "easyBoss"
+         : (room <= 19) ? "medium"
+         : (room === 20) ? "mediumBoss"
+         : (room <= 29) ? "hard"
+         : "finalBoss";
+}
+
+
+function handlePracticeModeComplete(){
+    stopTimedModeClock();
+
+    const accuracy = totalAttempts > 0
+        ? Math.round((correctAnswers / totalAttempts) * 100)
+        : 0;
+
+    sendGameData({
+        runID: runID,
+        game: "The Equilibrium Crisis",
+        event: `${gameMode}_complete`,
+        user: username,
+        email: studentEmail,
+        room: room,
+        questionId: 0,
+        correct: 1,
+        tag: "",
+        type: "",
+        objective: "",
+        responseTime: 0,
+        attempt: totalAttempts,
+        streak: streak,
+        elapsedTime: startTime ? (Date.now() - startTime) : 0,
+        adaptiveMode: `${gameMode}_complete`,
+        totalTime: startTime ? (Date.now() - startTime) : 0,
+        accuracy: accuracy / 100,
+        maxStreak: maxStreak,
+        totalAttempts: totalAttempts
+    });
+
+    document.getElementById("bossMessage").innerText = "";
+    document.getElementById("formulaHint").innerText = "";
+    document.getElementById("artifactDrop").style.display = "none";
+
+    document.getElementById("question").innerHTML = `
+        <span class="boss-title">${getModeDisplayName().toUpperCase()} COMPLETE</span>
+        <div class="boss-q">
+            You reached the end of this practice path.<br><br>
+            Accuracy: ${accuracy}%<br>
+            Total Attempts: ${totalAttempts}<br>
+            Best Streak: ${maxStreak}
+        </div>
+    `;
+
+    document.getElementById("answers").innerHTML = `
+        <button class="continue-btn" onclick="returnToModeSelectFromRun()">Choose Another Battle</button>
+    `;
+
+    document.getElementById("message").innerText = "Practice complete. The campaign record was not changed.";
+}
 // =============================================
 // INPUT SHORTCUT — SAFE TO KEEP OR REMOVE
 // =============================================
@@ -4282,6 +5361,19 @@ const microSkillBridgePools = {
 //
 // This function ensures fairness in answer order.
 // =============================================   
+
+// Legendary mode uses dedicated pools when present.
+// If the combined TEC pool has not been upgraded yet, this guard prevents the mode shell from breaking.
+if(!questionBanks.legendary || questionBanks.legendary.length === 0){
+    console.warn("Legendary pool is empty. Falling back to hard questions until TEC legendary items are added.");
+    questionBanks.legendary = questionBanks.hard || questionBanks.medium || questionBanks.easy || [];
+}
+
+if(!questionBanks.legendaryBoss || questionBanks.legendaryBoss.length === 0){
+    console.warn("Legendary boss pool is empty. Falling back to final boss questions until TEC legendary boss items are added.");
+    questionBanks.legendaryBoss = questionBanks.finalBoss || questionBanks.mediumBoss || questionBanks.easyBoss || [];
+}
+
 function shuffleOptions(question){
     let q = {
         id: question.id,
@@ -4564,6 +5656,16 @@ function playFinalBossMusic(){
 // Changing logic here will break progression.
      
 function loadQuestion() {
+    if(gameMode === "timed" && timedModeEndTime && Date.now() >= timedModeEndTime){
+        endTimedModeRun();
+        return;
+    }
+
+    if((gameMode === "timed" || gameMode === "exam") && room > 30){
+        handlePracticeModeComplete();
+        return;
+    }
+
     questionStartTime = Date.now(); 
     updateMazeTrack();
     const questionElement = document.getElementById("question");
@@ -4578,14 +5680,9 @@ function loadQuestion() {
 	imageBox.style.display = "none";
 
     // 1. Determine Difficulty and Boss Status
-	let diff = (room <= 9) ? "easy"
-         : (room === 10) ? "easyBoss"
-         : (room <= 19) ? "medium"
-         : (room === 20) ? "mediumBoss"
-         : (room <= 29) ? "hard"
-         : "finalBoss";
+	let diff = getDifficultyForMode();
 
-   const isBoss = diff.includes("Boss");
+   const isBoss = diff.includes("Boss") && gameMode !== "exam" && gameMode !== "timed";
 
    // Only reset health if the bossPool is currently empty (meaning a new encounter)
      if (isBoss && (!bossPool || bossPool.length === 0)) {
@@ -4593,7 +5690,7 @@ function loadQuestion() {
    }
     
     // --- MUSIC CONTROL ---
-    if(diff === "finalBoss"){
+    if(diff === "finalBoss" || (diff === "legendaryBoss" && room === 30)){
         playFinalBossMusic();
         }
     else if(diff.includes("Boss")){
@@ -4610,24 +5707,36 @@ function loadQuestion() {
     gameBox.classList.toggle("boss-mode", isBoss);
    
     // 2. UI & Progress Updates
-    document.getElementById("progressFill").style.width = (room / 30 * 100) + "%";
-    document.getElementById("areaDisplay").innerText = `${getAreaName(room)} (${room}/30)`;
-    document.getElementById("srAnnouncements").innerText = `Entering ${getAreaName(room)}. Room ${room} of 30.`;
+    document.getElementById("progressFill").style.width = (Math.min(room, 30) / 30 * 100) + "%";
+    const roomCap = (gameMode === "timed" || gameMode === "exam") ? Math.min(room, 30) : room;
+    document.getElementById("areaDisplay").innerText = `${getModeDisplayName()} — ${getAreaName(roomCap)} (${roomCap}/30)`;
+    document.getElementById("srAnnouncements").innerText = `Entering ${getModeDisplayName()}. ${getAreaName(roomCap)}. Room ${roomCap} of 30.`;
 
     // 3. Select the Question (CHANGE BOSS NAMES AND PNG)
     if (isBoss) {
         // 1. If it's a new fight (Health 3), decide the "Theme" of the boss
         if (bossHealth === 3 || !bossPool || bossPool.length === 0) {
             const bank = [...questionBanks[diff]];
-            let chosenTag = getWeakestTag();
+		  	let chosenTag = getWeakestTag();
 
-            bossPool = chosenTag 
-                ? bank.filter(q => q.tag === chosenTag) 
-                : [];
+			const bossTags = [...new Set(bank.map(q => q.tag))];
 
-            if (bossPool.length < 3) {
-                bossPool = bank.slice(0, 3);
-            }
+			const eligibleTags = bossTags.filter(tag =>
+    			bank.filter(q => q.tag === tag).length >= 3
+			);
+
+			let candidatePool = chosenTag
+   			 ? bank.filter(q => q.tag === chosenTag)
+  			  : [];
+
+			// If the selected weak tag does not support a full boss set,
+			// choose a valid boss theme instead.
+			if (candidatePool.length < 3) {
+    		const randomTag = eligibleTags[Math.floor(Math.random() * eligibleTags.length)];
+    			candidatePool = bank.filter(q => q.tag === randomTag);
+			}
+
+			bossPool = candidatePool.slice(0, 3);
         }
 
         // 2. Select the specific question based on boss health
@@ -4639,13 +5748,13 @@ function loadQuestion() {
 		}
 
 // 3. Boss Identity UI — Equilibrium Crisis
-	let bTitle = room === 10 ? "THE SIGNAL BREAKER"
-   	    : room === 20 ? "THE MEASURE WARDEN"
-   	    : "THE MARKET MARSHAL";
+	let bTitle = room === 10 ? "THE FRONTIER KEEPER"
+   	    : room === 20 ? "THE SIGNAL BROKER"
+   	    : "THE PRICE MAGISTRATE";
 
-	let bColor = room === 10 ? "#d7b35a"   // Signal Shard / old gold
- 	   : room === 20 ? "#38bdf8"          // Warden's Gauge / market blue
-  	   : "#f0c86a";                       // Market Marshal's Scales / civic gold
+	let bColor = room === 10 ? "#d7b35a"   // Frontier Compass / old gold
+ 	   : room === 20 ? "#38bdf8"          // Signal Lens / market blue
+  	   : "#f0c86a";                       // Magistrate's Scales / civic gold
 
 	document.getElementById("srAnnouncements").innerText =
   	  `Boss encounter. ${bTitle}. Prepare yourself`;
@@ -4668,16 +5777,16 @@ function loadQuestion() {
 // =============================================
         
     if(room === 10){
-        bossImage = "breaker.png";
-        bossClass = "breakerGlow";
+        bossImage = "keeper.png";
+        bossClass = "keeperGlow";
     }
     else if(room === 20){
-        bossImage = "warden.png";
-        bossClass = "measureWardenGlow";
+        bossImage = "broker.png";
+        bossClass = "brokerGlow";
     }
     else{
-        bossImage = "marshal.png";
-        bossClass = "marshalGlow";
+        bossImage = "magistrate.png";
+        bossClass = "magistrateGlow";
     }
 
         questionElement.innerHTML = `
@@ -4702,7 +5811,32 @@ function loadQuestion() {
     const weakestTag = getWeakestTag();
     adaptiveMode = purpose;
 
-    if(diff === "easy" && profile.mediumReady){
+    if(gameMode === "legendary"){
+        adaptiveMode = "legendary";
+        currentQuestion = shuffleOptions(
+            getAdaptiveQuestion("legendary", strongestTag || weakestTag, {
+                mode: "challenge",
+                preferredTypes: ELITE_PREFERRED_TYPES,
+                purpose: "stretch"
+            })
+        );
+
+        if(currentQuestion.image){
+            imageBox.innerHTML = `<img src="${currentQuestion.image}" alt="Question graph">`;
+            imageBox.style.display = "block";
+        }
+
+        if(!currentQuestion.type){ currentQuestion.type = "synthesis"; }
+        wizardSpeak(getWizardLine(currentQuestion.type));
+
+        bossMsg.innerText = (room === 9 || room === 19 || room === 29)
+            ? "⚠️ LEGENDARY BOSS DETECTED IN NEXT ROOM ⚠️"
+            : "";
+        bossMsg.style.color = "#f97316";
+
+        questionElement.innerHTML = `<div>${currentQuestion.q}</div>`;
+    }
+    else if(diff === "easy" && profile.mediumReady){
         adjustedDiff = "medium";
     }
 
@@ -4762,8 +5896,8 @@ if(currentQuestion.image){
     wizardSpeak(wizardText);
 
     // --- UI ---
-    bossMsg.innerText = (room === 9 || room === 19 || room === 29)
-        ? "⚠️ DANGER: BOSS DETECTED IN NEXT ROOM ⚠️"
+    bossMsg.innerText = ((gameMode === "standard" || gameMode === "legendary") && (room === 9 || room === 19 || room === 29))
+        ? (gameMode === "legendary" ? "⚠️ LEGENDARY BOSS DETECTED IN NEXT ROOM ⚠️" : "⚠️ DANGER: BOSS DETECTED IN NEXT ROOM ⚠️")
         : "";
     bossMsg.style.color = "#ef4444";
 
@@ -4885,11 +6019,11 @@ function answer(choice) {
    
     totalAttempts++;
    
-    const isBossRoom = (room === 10 || room === 20 || room === 30);
+    const isBossRoom = isBossRoomForMode(room);
     const msgElement = document.getElementById("message");
     const wizard = document.getElementById("wizardImage");
-const isCorrect = (choice === currentQuestion.a);
-const responseTime = Date.now() - questionStartTime;
+	const isCorrect = (choice === currentQuestion.a);
+	const responseTime = Date.now() - questionStartTime;
 
 // =============================================
 // RAPID GUESSING LOCKOUT
@@ -5070,7 +6204,7 @@ recordAdaptiveAttempt(currentQuestion, isCorrect, responseTime);
         `<span class='fade-out-text'>${getRecoveryLine("complete")}</span>`;
 
     room = returnRoom;
-    saveGameState();
+    localStorage.setItem("gauntletRoom", room);
 
     setTimeout(loadQuestion, TIMING.normal);
     return;
@@ -5089,20 +6223,21 @@ recordAdaptiveAttempt(currentQuestion, isCorrect, responseTime);
         if(isBossRoom){
         bossHealth--;
         
-        const bossLine = getEquilibriumCrisisBossLine({
-            isCorrect: true,
-            tag: currentQuestion.tag || "",
-            type: currentQuestion.type || "",
-            objective: currentQuestion.objective || inferObjective(currentQuestion),
-            streak,
-            bossHealth,
-            responseTime
-        });
+		const bossLine = getEquilibriumCrisisBossLine({
+ 		 isCorrect: true,
+ 		 tag: currentQuestion.tag || "",
+		  type: currentQuestion.type || "",
+ 		 objective: currentQuestion.objective || inferObjective(currentQuestion),
+ 		 streak,
+ 		 bossHealth,
+ 		 responseTime
+		});
 
-        msgElement.innerHTML =
-            `<span style='color:#f87171;font-weight:bold;'>⚔ HIT! Boss Health: ${bossHealth}/3</span><br>
-             <span class='fade-out-text'>${bossLine}</span>`;
-        triggerBossShake();
+		msgElement.innerHTML =
+		  `<span style='color:#f87171;font-weight:bold;'>⚔ HIT! Boss Health: ${bossHealth}/3</span><br>
+   			<span class='fade-out-text'>${bossLine}</span>`;
+
+		triggerBossShake();
         
         if (bossHealth > 0) {
            setTimeout(loadQuestion, TIMING.boss);
@@ -5121,25 +6256,25 @@ recordAdaptiveAttempt(currentQuestion, isCorrect, responseTime);
          bossPool = [];
            
        // Boss defeated — Equilibrium Crisis boss artifacts
-if(room === 10){
-    document.getElementById("vaultShard").classList.add("unlocked");
-    localStorage.setItem("vaultShard", "true");
-    showArtifact(artifacts.shard.img, artifacts.shard.title, artifacts.shard.text);
-}
+if(modeAllowsRealmProgress()){
+    if(room === 10){
+        document.getElementById("vaultShard").classList.add("unlocked");
+        localStorage.setItem("vaultShard", "true");
+        showArtifact(artifacts.shard.img, artifacts.shard.title, artifacts.shard.text);
+    }
 
-if(room === 20){
-    document.getElementById("vaultGauge").classList.add("unlocked");
-    localStorage.setItem("vaultGauge", "true");
-    showArtifact(artifacts.gauge.img, artifacts.gauge.title, artifacts.gauge.text);
-}
+    if(room === 20){
+        document.getElementById("vaultGauge").classList.add("unlocked");
+        localStorage.setItem("vaultGauge", "true");
+        showArtifact(artifacts.gauge.img, artifacts.gauge.title, artifacts.gauge.text);
+    }
 
-if(room === 30){
-    document.getElementById("vaultSeal").classList.add("unlocked");
-    localStorage.setItem("vaultSeal", "true");
-    showArtifact(artifacts.seal.img, artifacts.seal.title, artifacts.seal.text);
+    if(room === 30){
+        document.getElementById("vaultSeal").classList.add("unlocked");
+        localStorage.setItem("vaultSeal", "true");
+        showArtifact(artifacts.seal.img, artifacts.seal.title, artifacts.seal.text);
+    }
 }
-
-saveGameState();
 
 // ... (Inside the Boss Victory check)
         showKnowledgeRoom(room);
@@ -5153,7 +6288,15 @@ saveGameState();
     // AND it wasn't a Boss Room (or a Detour).
    msgElement.innerHTML = "";
    room++;
+   timedHighestRoom = Math.max(timedHighestRoom, Math.min(room, 30));
    saveGameState();
+   localStorage.setItem("gauntletRoom", room);
+
+   if(gameMode === "timed" && timedModeEndTime && Date.now() >= timedModeEndTime){
+       endTimedModeRun();
+       return;
+   }
+
    showHallwayTransition(currentQuestion.feedback);
    return;
     }      
@@ -5188,19 +6331,19 @@ saveGameState();
             (conceptMemory[currentQuestion.tag] || 0) + rushPenalty;
     }
 
-    if(isBossRoom){
-        const bossLine = getEquilibriumCrisisBossLine({
-            isCorrect: false,
-            tag: currentQuestion.tag || "",
-            type: currentQuestion.type || "",
-            objective: currentQuestion.objective || inferObjective(currentQuestion),
-            streak,
-            bossHealth,
-            responseTime
-        });
+	if(isBossRoom){
+	  const bossLine = getEquilibriumCrisisBossLine({
+    	isCorrect: false,
+    	tag: currentQuestion.tag || "",
+    	type: currentQuestion.type || "",
+    	objective: currentQuestion.objective || inferObjective(currentQuestion),
+    	streak,
+    	bossHealth,
+    	responseTime
+  	 });
 
-        msgElement.innerHTML = `<span class='fade-out-text'>${bossLine}</span>`;
-    }
+     msgElement.innerHTML = `<span class='fade-out-text'>${bossLine}</span>`;
+   }
 
     // --- IF STUDENT MISSES DURING ACTIVE REMEDIATION ---
 if(remediationState.active){
@@ -5227,7 +6370,7 @@ if(remediationState.active){
 }
 
 // --- STAGED REMEDIATION TRIGGER ---
-if (!remediationState.active && currentQuestion.tag && shouldTriggerDetour(currentQuestion)) {
+if (gameMode !== "legendary" && !remediationState.active && currentQuestion.tag && shouldTriggerDetour(currentQuestion)) {
     remediationState = planRemediation(currentQuestion, responseTime) || remediationState;
     detourActive = true;
     detourReturnRoom = room;
@@ -5245,10 +6388,10 @@ if (!remediationState.active && currentQuestion.tag && shouldTriggerDetour(curre
             currentQuestion.hint ? "💡 Hint: " + currentQuestion.hint : "";
 
         const remediationMessage = remediationState.careless
-            ? "You rushed the signal. Slow down and read the market."
+            ? "You rushed the choice. Slow down and regain control."
             : remediationState.slowStruggle
                 ? "The Crisis doesn't budge. Rebuild the concept before advancing."
-                : getRecoveryLine(remediationState.stage);
+                : "Your control fractured. Repair the weakness before moving on.";
 
         msgElement.innerHTML =
             `<span class='fade-out-text'>${remediationMessage}</span>`;
@@ -5268,13 +6411,20 @@ if (!remediationState.active && currentQuestion.tag && shouldTriggerDetour(curre
 	let newRoom = room - fallback;
 
 // Never fall back behind the most recently cleared boss gate
-	room = Math.max(bossCheckpoint, newRoom);
+room = Math.max(bossCheckpoint, newRoom);
 
-    saveGameState();
+if(gameMode === "timed") timedSetbacks++;
 
-    alert(`Incorrect! You trip in the darkness and tumble back to Room ${room}.`);
-
-    loadQuestion();
+localStorage.setItem("gauntletRoom", room);
+	
+showGameModal({
+    title: "Wrong Turn",
+    text: `Incorrect! You trip in the darkness and tumble back to Room ${room}.`,
+    confirmText: "Continue",
+    onConfirm: function(){
+        loadQuestion();
+    }
+});
 }
 
 // =============================================
@@ -5636,13 +6786,95 @@ function generateCode(name, acc, streak, total){
 //
 // This is a PRESENTATION layer, not a logic layer.
 // =============================================     
-function handleVictory() {
-    localStorage.setItem(REALM_STARTED_KEY, "true");
-    localStorage.setItem(REALM_COMPLETE_KEY, "true");
-    localStorage.setItem(REALM_STATUS_KEY, "restored");
-    localStorage.setItem(REALM_ROOM_KEY, "30");
-
+function handleLegendaryVictory(){
+    stopTimedModeClock();
+    localStorage.setItem("economicRealm_equilibriumCrisis_legendary_complete", "true");
+    localStorage.setItem("equilibriumCrisisLegendaryComplete", "true");
     clearSavedGame();
+
+    bgMusic.pause();
+    bossMusic.pause();
+    finalBossMusic.pause();
+    if (typeof sfxVictory !== 'undefined') {
+        sfxVictory.currentTime = 0;
+        sfxVictory.play();
+    }
+
+    const totalTimeMs = Date.now() - startTime;
+    const timeString = formatTime(totalTimeMs);
+    const accuracy = totalAttempts > 0 ? Math.round((correctAnswers / totalAttempts) * 100) : 0;
+    const verificationCode = generateCode(username + "|LEGENDARY", accuracy, maxStreak, totalTimeMs);
+
+    sendGameData({
+        runID: runID,
+        game: "The Equilibrium Crisis",
+        event: "legendary_complete",
+        user: username,
+        email: studentEmail,
+        room: room,
+        questionId: 0,
+        correct: 1,
+        tag: "",
+        type: "",
+        objective: "",
+        responseTime: 0,
+        attempt: totalAttempts,
+        streak: streak,
+        elapsedTime: totalTimeMs,
+        adaptiveMode: "legendary_complete",
+        totalTime: totalTimeMs,
+        accuracy: accuracy / 100,
+        maxStreak: maxStreak,
+        totalAttempts: totalAttempts,
+        verificationCode: verificationCode
+    });
+
+    let judgment = "You cleared Legendary Mode. That means you survived the full Equilibrium Crisis with multi-step items, graph pressure, close answers, and no soft landing.";
+    if(accuracy >= 90){
+        judgment = "Legendary run confirmed. You did not just recognize terms. You read the models, tracked the traps, and handled the pressure.";
+    } else if(accuracy < 75){
+        judgment = "You survived Legendary Mode, but the Crisis left dents. Completion counts. Mastery still needs another run.";
+    }
+
+    document.getElementById("bossMessage").innerText = "";
+    document.getElementById("formulaHint").innerText = "";
+    document.getElementById("artifactDrop").style.display = "none";
+
+    document.getElementById("question").innerHTML = `
+        <span class="boss-title">LEGENDARY MODE COMPLETE</span>
+        <div class="boss-q">
+            ${judgment}<br><br>
+            Accuracy: ${accuracy}%<br>
+            Total Attempts: ${totalAttempts}<br>
+            Best Streak: ${maxStreak}<br>
+            Total Time: ${timeString}<br>
+            Verification Code: <strong>${verificationCode}</strong>
+        </div>
+    `;
+
+    document.getElementById("answers").innerHTML = `
+        <button class="continue-btn" onclick="returnToModeSelectFromRun()">Choose Another Battle</button>
+    `;
+
+    document.getElementById("message").innerText = "Legendary completion saved separately. Standard realm progress was not changed.";
+}
+
+function handleVictory() {
+    if(!modeAllowsRealmProgress()){
+        if(gameMode === "legendary"){
+            handleLegendaryVictory();
+        } else {
+            handlePracticeModeComplete();
+        }
+        return;
+    }
+
+    localStorage.setItem(REALM_STARTED_KEY, "true");
+	localStorage.setItem(REALM_COMPLETE_KEY, "true");
+	localStorage.setItem(REALM_STATUS_KEY, "restored");
+	localStorage.setItem(REALM_ROOM_KEY, "30");
+	
+	clearSavedGame();
 	bgMusic.pause();
     bossMusic.pause();
     if (typeof sfxVictory !== 'undefined') {
@@ -5693,13 +6925,13 @@ sendGameData({
 // =============================================
 let archivistLine = "";
 if(accuracy >= 90){
-    archivistLine = "You stabilized the Equilibrium Crisis. Tradeoffs, signals, and market forces move clearly before you.";
+    archivistLine = "You stabilized the Equilibrium Crisis. Market signals, national measures, and policy distortions now move clearly before you.";
 }
 else if(accuracy >= 75){
-    archivistLine = "You read the market well enough to advance. But opportunity cost, shifting curves, and policy distortions can still catch you slipping.";
+    archivistLine = "You read the crisis well enough to advance. But the combined market and national ledger material can still catch you slipping.";
 }
 else{
-    archivistLine = "You survived the Equilibrium Crisis. Barely. The market gave you signals, and you tried to bargain with them. Bad move.";
+    archivistLine = "You survived the Equilibrium Crisis. Barely. The market gave you answers, and you tried to bargain with them. Bad move.";
 }
 
 let lineColor = "#38bdf8"; // market blue
@@ -5728,11 +6960,11 @@ else if(accuracy < 75){
    gameBox.innerHTML = `
     <div style="text-align:center; padding:30px;">
         <h1 class="victory" style="color:#f0c86a; text-shadow:0 0 18px rgba(240,200,106,0.9), 0 0 34px rgba(56,189,248,0.35); letter-spacing:2px;">
-            CRISIS STABILIZED
+            GATE OPENED
         </h1>
 
         <div style="margin:20px 0; padding:16px; background:rgba(5,10,18,0.82); border-radius:10px; border:1px solid rgba(240,200,106,0.35); box-shadow:0 0 24px rgba(0,0,0,0.65), inset 0 0 22px rgba(56,189,248,0.08);">
-            <p>Crisis Record: <strong>${username}</strong></p>
+            <p>Market Record: <strong>${username}</strong></p>
             <p>Accuracy: <strong>${accuracy}%</strong> | Best Streak: <strong>${maxStreak}</strong></p>
             <p>Elapsed Time: <strong>${timeString}</strong> | Total Questions: <strong>${totalAttempts}</strong></p>
             <p style="font-size:0.8em; color:#9ca3af;">Verification Code: <span id="vCode" style="color:#f0c86a;">${verificationCode}</span></p>
@@ -5941,6 +7173,7 @@ function sendGameData(data) {
 </script>
 </body>
 </html>
+
 
 
 
