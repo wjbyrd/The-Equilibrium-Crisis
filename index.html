@@ -2196,8 +2196,8 @@ DO NOT REMOVE:
 <div class="main-panel">
     <div id="gameShell">
         <div id="wizardBox">
-            <div id="wizardName">The Meridian</div>
-            <img src="meridian.png" id="wizardImage" alt="The Meridian">
+            <div id="wizardName">The Chancellor</div>
+            <img src="chancellor.png" id="wizardImage" alt="The Chancellor">
         </div>
 
         <!-- GAME -->
@@ -3814,7 +3814,7 @@ const artifacts = {
 
 function getRecoveryLine(stage){
   if(stage === "repair"){
-    return "Recovery route opened. The Meridian is isolating the broken market signal.";
+    return "Recovery route opened. The Chancellor is isolating the broken market signal.";
   }
 
   if(stage === "bridge"){
@@ -7955,7 +7955,7 @@ Accuracy: ${accuracy}%
 Best Streak: ${maxStreak}
 Total Questions: ${totalAttempts}
 Code: ${code}
-Verified by The Meridian`;
+Verified by The Chancellor`;
 
     navigator.clipboard.writeText(shareText).then(() => {
         const btn = document.getElementById("shareBtn");
