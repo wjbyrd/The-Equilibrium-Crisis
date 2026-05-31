@@ -2455,6 +2455,15 @@ let timedModeTimerInterval = null;
 let timedHighestRoom = 1;
 let timedSetbacks = 0;
 
+// =============================================
+// REALM ACHIEVEMENT TRACKING
+// These keys are read by The Economic Realm hub.
+// Keep this small and boring. Boring means it works.
+// =============================================
+let resumedSavedRunThisSession = false;
+let bossMistakeCountThisRun = 0;
+let bossesDefeatedThisRun = 0;
+
 function modeAllowsSave(){
     return gameMode === "standard" || gameMode === "legendary";
 }
@@ -2483,6 +2492,38 @@ function getModeDisplayName(){
     return "Standard Campaign";
 }
 
+function addRealmStat(key, amount = 1){
+    const current = parseInt(localStorage.getItem(key) || "0", 10);
+    localStorage.setItem(key, String((Number.isFinite(current) ? current : 0) + amount));
+}
+
+function setRealmFlag(key){
+    localStorage.setItem(key, "true");
+}
+
+function updateRealmMaxStat(key, value){
+    const numericValue = Number(value || 0);
+    const current = parseInt(localStorage.getItem(key) || "0", 10);
+
+    if(Number.isFinite(numericValue) && numericValue > (Number.isFinite(current) ? current : 0)){
+        localStorage.setItem(key, String(numericValue));
+    }
+}
+
+function recordTimedTrialAchievementStats(accuracy, reachedRoom){
+    const safeAccuracy = Number.isFinite(Number(accuracy)) ? Number(accuracy) : 0;
+    const safeRoom = Number.isFinite(Number(reachedRoom)) ? Number(reachedRoom) : 0;
+
+    updateRealmMaxStat("equilibriumCrisisTimedBestRoom", safeRoom);
+    updateRealmMaxStat("equilibriumCrisisTimedBestAccuracy", safeAccuracy);
+    updateRealmMaxStat("economicRealm_equilibriumCrisis_timedBestRoom", safeRoom);
+    updateRealmMaxStat("economicRealm_equilibriumCrisis_timedBestAccuracy", safeAccuracy);
+
+    if(safeRoom >= 30 && safeAccuracy >= 80){
+        setRealmFlag("economicRealm_equilibriumCrisis_trial_by_clock_complete");
+    }
+}
+
 function saveGameState(){
     if(!modeAllowsSave()) return;
 
@@ -2505,6 +2546,9 @@ function saveGameState(){
         lastTypes,
         usedQuestions,
         questionHistory,
+        resumedSavedRunThisSession,
+        bossMistakeCountThisRun,
+        bossesDefeatedThisRun,
         savedAt: Date.now(),
 
         artifacts: {
@@ -2557,6 +2601,9 @@ function loadSavedGame(){
 
         usedQuestions = saveData.usedQuestions || usedQuestions;
         questionHistory = saveData.questionHistory || questionHistory;
+        resumedSavedRunThisSession = !!saveData.resumedSavedRunThisSession;
+        bossMistakeCountThisRun = Number(saveData.bossMistakeCountThisRun || 0);
+        bossesDefeatedThisRun = Number(saveData.bossesDefeatedThisRun || 0);
 
         if(saveData.artifacts?.vaultShard) localStorage.setItem("vaultShard", "true");
         if(saveData.artifacts?.vaultGauge) localStorage.setItem("vaultGauge", "true");
@@ -4049,10 +4096,14 @@ function endTimedAttemptEarly(){
     localStorage.setItem("equilibriumCrisisTimedLastAttempts", String(totalAttempts));
     localStorage.setItem("equilibriumCrisisTimedLastStreak", String(maxStreak));
 
+    const reachedRoom = Math.max(room, timedHighestRoom || 1);
+
     const bestRoom = Number(localStorage.getItem("equilibriumCrisisTimedBestRoom") || 0);
-    if(room > bestRoom){
-        localStorage.setItem("equilibriumCrisisTimedBestRoom", String(room));
+    if(reachedRoom > bestRoom){
+        localStorage.setItem("equilibriumCrisisTimedBestRoom", String(reachedRoom));
     }
+
+    recordTimedTrialAchievementStats(accuracy, reachedRoom);
 
     returnToModeSelectFromRun();
 }
@@ -4072,6 +4123,7 @@ function startNewRun(){
 
 function continueSavedRun(){
     gameMode = "standard";
+    resumedSavedRunThisSession = true;
     startGame(true);
 }
 
@@ -4123,7 +4175,10 @@ function startGame(shouldResume = false) {
    studentEmail = inputEmail;
    username = generatePseudonymFromEmail(studentEmail);
 
-const hasSavedRun = shouldResume ? loadSavedGame() : false;
+const hasSavedRun = shouldResume && modeAllowsSave() ? loadSavedGame() : false;
+if(hasSavedRun){
+    resumedSavedRunThisSession = true;
+}
 
 if(!hasSavedRun){
     bossCheckpoint = 1;
@@ -4144,7 +4199,8 @@ sendGameData({
     game: "The Equilibrium Crisis",
     event: hasSavedRun ? "resume" : "start",
     user: username,
-    email: studentEmail
+    email: studentEmail,
+    mode: gameMode
 });
 
 // =============================================
@@ -4170,6 +4226,9 @@ if(!hasSavedRun){
 	rapidGuessHistory = [];
 	rapidGuessWarnings = 0;
 	rapidGuessLocked = false;
+    resumedSavedRunThisSession = false;
+    bossMistakeCountThisRun = 0;
+    bossesDefeatedThisRun = 0;
 
     if(modeAllowsSave()){
         localStorage.removeItem("gauntletRoom");
@@ -4255,6 +4314,9 @@ function resetRunStateForNewMode(){
     rapidGuessLocked = false;
     timedHighestRoom = 1;
     timedSetbacks = 0;
+    resumedSavedRunThisSession = false;
+    bossMistakeCountThisRun = 0;
+    bossesDefeatedThisRun = 0;
 
     questionHistory = {
         easy: [], medium: [], hard: [], elite: [], legendary: [], calculation: [],
@@ -4361,6 +4423,7 @@ function endTimedModeRun(){
     localStorage.setItem("equilibriumCrisisTimedLastAttempts", String(totalAttempts));
     localStorage.setItem("equilibriumCrisisTimedLastStreak", String(maxStreak));
     localStorage.setItem("equilibriumCrisisTimedLastSetbacks", String(timedSetbacks));
+    recordTimedTrialAchievementStats(accuracy, timedHighestRoom);
 
     sendGameData({
         runID: runID,
@@ -4459,6 +4522,11 @@ function handlePracticeModeComplete(){
     const accuracy = totalAttempts > 0
         ? Math.round((correctAnswers / totalAttempts) * 100)
         : 0;
+
+    if(gameMode === "exam"){
+        setRealmFlag("economicRealm_examDrillCompleted");
+        setRealmFlag(`economicRealm_${REALM_MISSION_KEY}_exam_complete`);
+    }
 
     sendGameData({
         runID: runID,
@@ -6967,6 +7035,8 @@ recordAdaptiveAttempt(currentQuestion, isCorrect, responseTime);
     if (isCorrect) {
         streak++;
         if (streak > maxStreak) maxStreak = streak;
+        updateRealmMaxStat("economicRealm_bestStreak", maxStreak);
+        updateRealmMaxStat("economicRealm_equilibriumCrisis_bestStreak", maxStreak);
     } else {
         streak = 0;
     }
@@ -7020,6 +7090,8 @@ recordAdaptiveAttempt(currentQuestion, isCorrect, responseTime);
         },200);
 
 		correctAnswers++;
+        addRealmStat("economicRealm_totalCorrectAnswers", 1);
+        addRealmStat(`economicRealm_${REALM_MISSION_KEY}_correctAnswers`, 1);
         handleStreakVisuals();
        
         // --- STAGED REMEDIATION SUCCESS PATH ---
@@ -7121,6 +7193,11 @@ recordAdaptiveAttempt(currentQuestion, isCorrect, responseTime);
            return;
         }
          // Boss defeated
+         if(gameMode === "standard"){
+             bossesDefeatedThisRun++;
+             saveGameState();
+         }
+
          sendGameData({
             runID: runID,
 			game: "The Equilibrium Crisis",
@@ -7180,6 +7257,11 @@ if(modeAllowsRealmProgress()){
 // =============================================
 // ❌ WRONG ANSWER BLOCK — ALL FAILURE LOGIC
 // =============================================
+
+    if(isBossRoom && gameMode === "standard"){
+        bossMistakeCountThisRun++;
+        saveGameState();
+    }
        
     if (isBossRoom) {
         sfxWrong.volume = 0.7;
@@ -7750,6 +7832,16 @@ function handleVictory() {
 	localStorage.setItem(REALM_COMPLETE_KEY, "true");
 	localStorage.setItem(REALM_STATUS_KEY, "restored");
 	localStorage.setItem(REALM_ROOM_KEY, "30");
+    localStorage.setItem(`economicRealm_${REALM_MISSION_KEY}_artifactsCollected`, "3");
+
+    if(resumedSavedRunThisSession){
+        setRealmFlag(`economicRealm_${REALM_MISSION_KEY}_resume_finish_complete`);
+        setRealmFlag("economicRealm_returnAndRebuild_complete");
+    }
+
+    if(bossesDefeatedThisRun >= 3 && bossMistakeCountThisRun === 0){
+        setRealmFlag(`economicRealm_${REALM_MISSION_KEY}_perfect_calibration_complete`);
+    }
 	
 	clearSavedGame();
 	bgMusic.pause();
@@ -8051,6 +8143,7 @@ function sendGameData(data) {
 </script>
 </body>
 </html>
+
 
 
 
