@@ -244,9 +244,9 @@ body::after{
 
     background:
         radial-gradient(circle at center,
-            rgba(56,189,248,0.13) 0%,
-            rgba(15,23,42,0.58) 46%,
-            rgba(3,10,24,0.94) 74%,
+            rgba(139,92,246,0.14) 0%,
+            rgba(15,23,42,0.60) 46%,
+            rgba(20,12,42,0.94) 74%,
             rgba(2,6,23,0.99) 100%);
 
     backdrop-filter: blur(6px);
@@ -254,17 +254,18 @@ body::after{
     box-sizing: border-box;
 
     box-shadow:
-        0 0 22px rgba(56,189,248,0.18),
-        0 0 58px rgba(240,200,106,0.10),
+        0 0 22px rgba(139,92,246,0.20),
+        0 0 58px rgba(56,189,248,0.11),
         0 0 72px rgba(15,23,42,0.72),
         inset 0 0 42px rgba(0,0,0,0.78);
 
-    border: 1px solid rgba(247,217,130,0.34);
+    border: 1px solid rgba(167,139,250,0.36);
     animation: torchFlicker 6s infinite;
     transition: box-shadow .3s ease, border-color .3s ease;
     position: relative;
 }
 
+/* Boss state styling — triggered during boss fights (DO NOT REMOVE) */	
 #gameBox.boss-mode {
     border: 2px solid rgba(247,217,130,0.88);
     box-shadow:
@@ -280,27 +281,28 @@ body::after{
     pointer-events: none;
 }
 
-/* Tier 1 — Supply Gatekeeper */
+/* Tier 1 — The Warden */
 .boss10 .boss-icon{
     filter:
         drop-shadow(0 0 6px rgba(56,189,248,0.88))
         drop-shadow(0 0 14px rgba(247,217,130,0.48));
 }
 
-/* Tier 2 — Elasticity Warden */
+/* Tier 2 — The Breaker */
 .boss20 .boss-icon{
     filter:
         drop-shadow(0 0 8px rgba(14,165,233,0.94))
         drop-shadow(0 0 18px rgba(56,189,248,0.56));
 }
 
-/* Tier 3 — Market Arbiter */
+/* Tier 3 — The Marshal */
 .boss30 .boss-icon{
     filter:
         drop-shadow(0 0 10px rgba(247,217,130,0.96))
         drop-shadow(0 0 25px rgba(56,189,248,0.62));
 }
 
+/* Damage effect when boss/player is hit (visual feedback) */	
 .hit {
     box-shadow:
         0 0 52px rgba(185,28,28,0.64),
@@ -309,6 +311,7 @@ body::after{
     animation: hitshake 0.4s ease;
 }
 
+/* Autosave indicator — positioned relative to gameBox */	
 #autosave {
     position: absolute;
     top: 15px;
@@ -320,6 +323,7 @@ body::after{
     text-shadow: 0 0 6px rgba(56,189,248,0.42);
 }
 
+/* Adds a graph box for questions with graphs */	
 #questionImageBox{
     margin: 0 auto 12px auto;
     text-align: center;
@@ -350,6 +354,7 @@ h2 {
     margin-bottom: 5px;
 }
 
+/* Main question text — keep readable and centered */	
 #question {
     font-size: clamp(20px, 4vw, 22px);
     line-height: 1.4;
@@ -361,6 +366,7 @@ h2 {
         0 0 8px rgba(56,189,248,0.14);
 }
 
+/* Boss/summary title — high emphasis text */	
 .boss-title {
     font-size: 28px;
     font-weight: bold;
@@ -373,6 +379,7 @@ h2 {
         0 3px 8px rgba(0,0,0,0.92);
 }
 
+/* Area/zone label — subtle contextual info */	
 .area-title {
     color: #c7ecff;
     font-size: 14px;
@@ -384,6 +391,7 @@ h2 {
         0 2px 5px rgba(0,0,0,0.88);
 }
 
+/* Boss summary text — left-aligned for readability */	
 .boss-q {
     font-style: normal;
     line-height: 1.5;
@@ -397,6 +405,7 @@ h2 {
     text-shadow: 0 2px 5px rgba(0,0,0,0.88);
 }
 
+/* Optional hint display (calculation or guidance) */	
 .hint-box {
     font-size: 13px;
     color: #f7d982;
@@ -407,7 +416,8 @@ h2 {
         0 0 6px rgba(247,217,130,0.30),
         0 0 12px rgba(56,189,248,0.16);
 }
-    
+
+/* Temporary feedback text (auto fades out) */
 .fade-out-text {
     animation: fadeOut 5s forwards;
     font-weight: bold;
@@ -418,6 +428,7 @@ h2 {
         0 2px 5px rgba(0,0,0,0.88);
 }
 
+/* Add styling to Chancellor text */	
 #message {
     margin-top: 10px;
     font-style: italic;
@@ -450,42 +461,40 @@ h2 {
    4. BUTTONS & INTERACTION
 ========================================= */
 
+/* Base button styling — applies to all buttons */	
 button {
     padding: 12px 22px;
     margin: 6px;
     font-size: 16px;
     cursor: pointer;
-
     background: linear-gradient(180deg, #12304f, #04101f);
     color: #eef6ff;
-
     border: 1px solid rgba(56,189,248,0.36);
     border-radius: 8px;
-
     box-shadow:
        0 0 12px rgba(56,189,248,0.20),
        0 0 24px rgba(15,23,42,0.54),
        inset 0 0 10px rgba(0,0,0,0.74);
-
     transition: all 0.15s ease;
 }
 
+/* Hover feedback — improves interactivity */	
 button:hover {
     background: linear-gradient(180deg, #1d4d73, #0b2238);
     border-color: rgba(247,217,130,0.72);
-
     box-shadow:
         0 0 18px rgba(56,189,248,0.36),
         0 0 34px rgba(247,217,130,0.24),
         inset 0 0 12px rgba(0,0,0,0.72);
-
     transform: translateY(-2px) scale(1.02);
 }
 
+/* Click feedback — simulates button press */	
 button:active {
     transform: scale(0.96);
 }
 
+/* Answer container — controls layout of choices */	
 .answers {
     display: flex;
     flex-direction: column;
@@ -494,6 +503,7 @@ button:active {
     width: 100%;
 }
 
+/* Individual answer buttons — flexible sizing */	
 .answers button {
     flex: 1 1 100%;
     min-height: 60px;
@@ -501,61 +511,52 @@ button:active {
     padding: 15px;
     font-size: 18px;
     margin: 0;
-
     background: linear-gradient(180deg,
         rgba(11,34,56,0.96),
         rgba(2,8,18,0.98));
-
     color: #eef6ff;
     border: 1px solid rgba(56,189,248,0.30);
-
     box-shadow:
         0 0 10px rgba(56,189,248,0.18),
         0 0 18px rgba(247,217,130,0.10),
         inset 0 0 14px rgba(0,0,0,0.78);
 }
 
+/* Answer hover — a little brighter than base */	
 .answers button:hover {
     background: linear-gradient(180deg,
         rgba(19,57,86,0.98),
         rgba(8,24,42,0.98));
-
     border-color: rgba(247,217,130,0.66);
-
     box-shadow:
         0 0 18px rgba(56,189,248,0.34),
         0 0 34px rgba(247,217,130,0.22),
         inset 0 0 14px rgba(0,0,0,0.74);
 }
 
+/* Utility button (fullscreen toggle) — safe to restyle or move */	
 .fullscreenBtn {
     position: absolute;
     top: 12px;
     left: 12px;
-
     padding: 6px 12px;
     font-size: 12px;
     letter-spacing: 1px;
     text-transform: uppercase;
-
     color: #e0f2fe;
     background: linear-gradient(180deg, #12304f, #04101f);
-
     border: 1px solid rgba(56,189,248,0.32);
     border-radius: 6px;
     cursor: pointer;
-
     box-shadow:
         0 0 10px rgba(56,189,248,0.22),
         inset 0 0 7px rgba(0,0,0,0.80);
-
     transition: all 0.15s ease;
 }
 
 .fullscreenBtn:hover {
     background: linear-gradient(180deg, #1d4d73, #0b2238);
     border-color: rgba(247,217,130,0.62);
-
     box-shadow:
         0 0 16px rgba(56,189,248,0.34),
         inset 0 0 8px rgba(0,0,0,0.76);
@@ -568,34 +569,60 @@ button:active {
         inset 0 0 10px rgba(0,0,0,0.86);
 }
 
+.return-menu-btn{
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    padding: 6px 12px;
+    font-size: 12px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: #e0f2fe;
+    background: linear-gradient(180deg, #12304f, #04101f);
+    border: 1px solid rgba(56,189,248,0.32);
+    border-radius: 6px;
+    cursor: pointer;
+    box-shadow:
+        0 0 10px rgba(56,189,248,0.22),
+        inset 0 0 7px rgba(0,0,0,0.80);
+    transition: all 0.15s ease;
+}
+
+.return-menu-btn:hover {
+    color: #f7d982;
+    background: linear-gradient(180deg, #1d4d73, #0b2238);
+    border-color: rgba(247,217,130,0.62);
+    box-shadow:
+        0 0 16px rgba(56,189,248,0.34),
+        inset 0 0 8px rgba(0,0,0,0.76);
+}
+
+.return-menu-btn:active {
+    transform: scale(0.95);
+}
+	
 .continue-btn {
     background: linear-gradient(180deg, #1d4d73, #04101f);
     color: #f7d982;
     font-weight: bold;
-
     padding: 14px 40px;
     font-size: 18px;
     border-radius: 8px;
-
     border: 1px solid rgba(247,217,130,0.56);
     cursor: pointer;
-
     box-shadow:
         0 0 16px rgba(56,189,248,0.32),
         0 0 34px rgba(247,217,130,0.22),
         inset 0 0 12px rgba(0,0,0,0.76);
-
     transition: all 0.15s ease;
 }
 
 .continue-btn:hover {
     background: linear-gradient(180deg, #24628f, #0b2238);
-
     box-shadow:
         0 0 24px rgba(56,189,248,0.46),
         0 0 42px rgba(247,217,130,0.28),
         inset 0 0 12px rgba(0,0,0,0.74);
-
     transform: scale(1.03);
 }
 
@@ -1684,45 +1711,6 @@ button:active {
 /* =========================================
    UPGRADE: MODE SELECT / TIMER / MODAL — THE EQUILIBRIUM CRISIS
 ========================================= */
-.return-menu-btn{
-    position: absolute;
-    top: 12px;
-    right: 12px;
-
-    padding: 6px 12px;
-    font-size: 12px;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-
-    color: #e0f2fe;
-    background: linear-gradient(180deg, #12304f, #04101f);
-
-    border: 1px solid rgba(56,189,248,0.32);
-    border-radius: 6px;
-    cursor: pointer;
-
-    box-shadow:
-        0 0 10px rgba(56,189,248,0.22),
-        inset 0 0 7px rgba(0,0,0,0.80);
-
-    transition: all 0.15s ease;
-}
-
-.return-menu-btn:hover {
-    color: #f7d982;
-    background: linear-gradient(180deg, #1d4d73, #0b2238);
-    border-color: rgba(247,217,130,0.62);
-
-    box-shadow:
-        0 0 16px rgba(56,189,248,0.34),
-        inset 0 0 8px rgba(0,0,0,0.76);
-}
-
-.return-menu-btn:active {
-    transform: scale(0.95);
-}
-
-
 .game-modal{
   position:fixed;
   inset:0;
