@@ -7156,8 +7156,8 @@ recordAdaptiveAttempt(currentQuestion, isCorrect, responseTime);
         },200);
 
 		correctAnswers++;
-        addRealmStat("economicRealm_totalCorrectAnswers", 1);
-        addRealmStat(`economicRealm_${REALM_MISSION_KEY}_correctAnswers`, 1);
+		recordRealmCorrectAnswer();
+		recordRealmStreak(streak);
         handleStreakVisuals();
        
         // --- STAGED REMEDIATION SUCCESS PATH ---
