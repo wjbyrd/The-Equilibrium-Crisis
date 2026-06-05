@@ -1118,15 +1118,12 @@ button:active {
   0%, 100% {
     filter: brightness(1);
   }
-
   25% {
     filter: brightness(1.04) saturate(1.04);
   }
-
   50% {
     filter: brightness(0.97) saturate(0.99);
   }
-
   75% {
     filter: brightness(1.03) saturate(1.03);
   }
@@ -1158,7 +1155,6 @@ button:active {
       0 0 16px rgba(247,217,130,0.22),
       inset 0 0 10px rgba(0,0,0,0.66);
   }
-
   45% {
     transform: scale(1.13);
     box-shadow:
@@ -1167,7 +1163,6 @@ button:active {
       0 0 42px rgba(15,42,64,0.68),
       inset 0 0 12px rgba(0,0,0,0.70);
   }
-
   70% {
     transform: scale(1.09);
     box-shadow:
@@ -1176,7 +1171,6 @@ button:active {
       0 0 30px rgba(15,42,64,0.60),
       inset 0 0 11px rgba(0,0,0,0.70);
   }
-
   100% {
     transform: scale(1.11);
     box-shadow:
@@ -1196,7 +1190,6 @@ button:active {
       0 0 18px rgba(56,189,248,0.24),
       0 2px 6px rgba(0,0,0,0.92);
   }
-
   50% {
     transform: scale(1.08);
     text-shadow:
@@ -1231,7 +1224,6 @@ button:active {
     opacity: 0;
     transform: translateY(8px);
   }
-
   to {
     opacity: 1;
     transform: translateY(0);
@@ -1247,7 +1239,6 @@ button:active {
       drop-shadow(0 0 18px rgba(56,189,248,0.30))
       drop-shadow(0 0 24px rgba(0,0,0,0.62));
   }
-
   50% {
     transform: scale(1.1);
     filter:
@@ -1263,7 +1254,6 @@ button:active {
     transform: scale(1);
     opacity: 0.9;
   }
-
   50% {
     transform: scale(1.08);
     opacity: 1;
@@ -1285,7 +1275,8 @@ button:active {
     max-width:700px;
     margin:0 auto 10px auto;
 }
-   
+
+/* TITLE ABOVE MAZE */	
 .top-title{
     font-size:22px;
     font-weight:bold;
@@ -1297,7 +1288,7 @@ button:active {
         0 0 18px rgba(56,189,248,0.20),
         0 2px 6px rgba(0,0,0,0.92);
 }
-   
+	
 #mazeTrackContainer{
     width:100%;
     max-width:600px;
@@ -1310,6 +1301,8 @@ button:active {
     padding:10px 14px;
 }
 
+/* Main Game Row */
+/* Main horizontal layout: wizard + game area */
 .main-panel{
     display:flex;
     gap:20px;
@@ -1318,25 +1311,23 @@ button:active {
     align-items: stretch;
 }
    
+/* Game Shell Wrapper*/
+/* Core game container — controls overall layout and spacing */
 #gameShell{
     display:flex;
     gap:20px;
     max-width:900px;
     width:100%;
     margin:0 auto;
-
     background: linear-gradient(
         180deg,
         rgba(11,34,56,0.88),
         rgba(4,14,28,0.96) 48%,
         rgba(2,6,23,0.99)
     );
-
     padding:20px;
     border-radius:16px;
-
     border:1px solid rgba(56,189,248,0.26);
-
     box-shadow:
        0 0 30px rgba(0,0,0,0.90),
        0 0 58px rgba(56,189,248,0.18),
@@ -1344,35 +1335,33 @@ button:active {
        inset 0 0 42px rgba(0,0,0,0.78);
 }
    
+/* Wizard Box */
+/* Chancellor display panel — fixed width, do not remove flex settings */
 #wizardBox{
     width:160px;
     min-width:160px;
     min-height:200px;
-
     background: linear-gradient(
         180deg,
         rgba(19,57,86,0.66),
         rgba(11,34,56,0.88) 52%,
         rgba(2,6,23,0.98)
     );
-
     border-radius:12px;
     padding:10px;
-
     display:flex;
     flex-direction: column;
     justify-content:center;
     align-items:center;    
     gap:6px;
-
     border:1px solid rgba(247,217,130,0.26);
-
     box-shadow:
         inset 0 0 26px rgba(0,0,0,0.78),
         0 0 18px rgba(56,189,248,0.16),
         0 0 30px rgba(247,217,130,0.08);
 }
 
+/* Wizard Name */
 #wizardName {
     font-size: 12px;
     letter-spacing: 1px;
@@ -1383,15 +1372,15 @@ button:active {
     opacity: 0.96;
     text-align: center;
     font-weight: 600;
-
     border-bottom: 1px solid rgba(215,179,90,0.35);
     padding-bottom: 2px;
-
     text-shadow:
         0 0 6px rgba(56,189,248,0.45),
         0 0 10px rgba(215,179,90,0.35);
 }
 
+/* Wizard Image */
+/* Crisis Advisor visual + floating animation */	
 #wizardImage{
     width:100%;
     max-width:180px;
@@ -1401,21 +1390,22 @@ button:active {
     animation: wizardFloat 4s ease-in-out infinite;
 }
     
+
 /* =========================================
    11. BOSS MODE (UI STATE OVERRIDES) — THE EQUILIBRIUM CRISIS
 ========================================= */
 
+/* Center layout when wizard is removed */
 .boss-mode #wizardBox{
     display:none;
 }
 
+/* Center and slightly constrain game area for boss mode */
 .boss-mode #gameBox{
     max-width:900px;
     width:90%;
     margin:0 auto;
-
     border-color: rgba(247,217,130,0.74);
-
     box-shadow:
         0 0 34px rgba(56,189,248,0.36),
         0 0 72px rgba(247,217,130,0.20),
@@ -1430,12 +1420,11 @@ button:active {
     display:block;
     margin:10px auto;
 }
-   
+
+/* Center layout when wizard is removed */
 .boss-mode #gameShell{
     justify-content:center;
-
     border-color: rgba(56,189,248,0.36);
-
     box-shadow:
        0 0 36px rgba(0,0,0,0.92),
        0 0 64px rgba(56,189,248,0.24),
@@ -1444,11 +1433,50 @@ button:active {
 }
 
 /* =========================================
-   12. MOBILE RESPONSIVE SYSTEM — THE EQUILIBRIUM CRISIS
+   12. MOBILE RESPONSIVE SYSTEM — SAFE TO EDIT (WITH LIMITS)
+=========================================
+
+This section controls how the game behaves on phones.
+
+GOAL:
+- Fit gameplay into a single screen as much as possible
+- Reduce vertical scrolling
+- Keep buttons thumb-friendly
+
+-----------------------------------------
+SAFE TO EDIT:
+- font sizes (clamp values)
+- spacing (gap, padding, margin)
+- grid layout (answers: 1fr 1fr vs 1fr)
+- wizard size (make smaller/larger)
+
+-----------------------------------------
+USE CAUTION:
+- removing elements entirely (may break flow)
+- changing flex direction randomly
+- making buttons too small (hurts usability)
+
+-----------------------------------------
+DO NOT MODIFY:
+- IDs (#gameShell, #gameBox, #wizardBox)
+- core layout structure
+
+-----------------------------------------
+COMMON CUSTOM CHANGES:
+- Want bigger buttons? Increase min-height
+- Want less scrolling? Reduce padding/gaps
+- Want simpler UI? Hide artifact labels
+
+-----------------------------------------
+TIP:
+Mobile design is about SPACE, not style.
+Every pixel matters.
+
 ========================================= */
 
 @media (max-width: 768px){
-  .fullscreenBtn{
+  .fullscreenBtn,
+  .return-menu-btn{
     display: none !important;
   }
 
@@ -1472,20 +1500,12 @@ button:active {
     text-align: center;
   }
 
-  .fullscreenBtn{
-    position: static;
-    display: block;
-    align-self: flex-start;
-    margin: 0 0 4px 0;
-    padding: 6px 10px;
-    font-size: 11px;
-  }
-
   #mazeTrackContainer{
     width: 100%;
     max-width: 100%;
     padding: 2px 4px;
     margin: 0 auto;
+    box-sizing: border-box;
   }
 
   #mazeTrack{
@@ -1512,6 +1532,7 @@ button:active {
     width: 100%;
     max-width: 100%;
     padding: 4px 6px;
+    box-sizing: border-box;
   }
 
   #artifactVault h3{
@@ -1557,9 +1578,8 @@ button:active {
     padding: 6px;
     gap: 6px;
     margin: 0 auto;
-
+    box-sizing: border-box;
     border-color: rgba(56,189,248,0.22);
-
     box-shadow:
        0 0 24px rgba(0,0,0,0.90),
        0 0 38px rgba(56,189,248,0.14),
@@ -1575,6 +1595,7 @@ button:active {
     padding-top: 6px;
     gap: 2px;
     margin: 0 auto;
+    box-sizing: border-box;
   }
 
   #wizardName{
@@ -1597,6 +1618,7 @@ button:active {
     width: 100%;
     padding: 8px;
     margin: 0 auto;
+    box-sizing: border-box;
   }
 
   #autosave{
@@ -1663,79 +1685,17 @@ button:active {
   }
 
   .sound-toggle{
-    right:14px;
-    bottom:14px;
-    padding:8px 10px;
-    font-size:10px;
+    right: 14px;
+    bottom: 14px;
+    padding: 8px 10px;
+    font-size: 10px;
   }
 }
 
-/* =========================================
-   13. SOUND ON/OFF — THE EQUILIBRIUM CRISIS
-========================================= */
-
-.sound-toggle{
-  position:fixed;
-  right:28px;
-  bottom:24px;
-  z-index:999;
-
-  padding:10px 13px;
-  border-radius:999px;
-
-  border:1px solid rgba(56,189,248,0.30);
-
-  background: linear-gradient(
-      180deg,
-      rgba(11,34,56,0.72),
-      rgba(2,6,23,0.82)
-  );
-
-  color:rgba(224,242,254,0.78);
-
-  cursor:pointer;
-  font-size:11px;
-  letter-spacing:.12em;
-  text-transform:uppercase;
-
-  box-shadow:
-      0 0 18px rgba(0,0,0,.48),
-      0 0 18px rgba(56,189,248,0.14),
-      inset 0 0 10px rgba(0,0,0,0.72);
-
-  backdrop-filter: blur(3px);
-
-  transition:
-      color .18s ease,
-      border-color .18s ease,
-      background .18s ease,
-      box-shadow .18s ease,
-      transform .18s ease;
-}
-
-.sound-toggle:hover{
-  color:#f7d982;
-  border-color:rgba(247,217,130,0.56);
-
-  background: linear-gradient(
-      180deg,
-      rgba(19,57,86,0.84),
-      rgba(4,14,28,0.90)
-  );
-
-  box-shadow:
-      0 0 22px rgba(0,0,0,.52),
-      0 0 20px rgba(56,189,248,0.22),
-      0 0 26px rgba(247,217,130,0.14),
-      inset 0 0 10px rgba(0,0,0,0.74);
-
-  transform: translateY(-1px);
-}
- 
-
 
 /* =========================================
-   UPGRADE: MODE SELECT / TIMER / MODAL — THE EQUILIBRIUM CRISIS
+   13. MODE SELECT + TIMED TRIAL HUD
+   The Equilibrium Crisis version
 ========================================= */
 
 .mode-select-screen{
@@ -1841,7 +1801,7 @@ button:active {
   color:rgba(224,242,254,0.88);
   text-align:left;
 }
-	
+
 .mode-back-btn{
   margin-top:18px;
   min-width:140px;
@@ -1860,14 +1820,14 @@ button:active {
 }
 
 .timed-mode-hud{
-  margin: 8px auto 12px;
-  padding: 8px 14px;
-  width: fit-content;
-  border-radius: 999px;
-  align-items: center;
-  gap: 12px;
-  background: linear-gradient(180deg, rgba(11,34,56,0.88), rgba(2,6,23,0.96));
-  border: 1px solid rgba(247,217,130,0.48);
+  margin:8px auto 12px;
+  padding:8px 14px;
+  width:fit-content;
+  border-radius:999px;
+  align-items:center;
+  gap:12px;
+  background:linear-gradient(180deg, rgba(11,34,56,0.88), rgba(2,6,23,0.96));
+  border:1px solid rgba(247,217,130,0.48);
   box-shadow:
     0 0 16px rgba(56,189,248,0.24),
     0 0 26px rgba(247,217,130,0.14),
@@ -1875,30 +1835,33 @@ button:active {
 }
 
 .timer-label{
-  font-size: 12px;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  color: #c7ecff;
+  font-size:12px;
+  letter-spacing:2px;
+  text-transform:uppercase;
+  color:#c7ecff;
 }
 
 .timer-display{
-  font-size: 22px;
-  font-weight: 700;
-  letter-spacing: 1px;
-  color: #f7d982;
+  font-size:22px;
+  font-weight:700;
+  letter-spacing:1px;
+  color:#f7d982;
   text-shadow:
     0 0 10px rgba(247,217,130,0.62),
     0 0 18px rgba(56,189,248,0.24);
 }
 
 .timer-warning{
-  animation: timerWarningPulse .75s ease-in-out infinite alternate;
+  animation:timerWarningPulse .75s ease-in-out infinite alternate;
 }
 
 @keyframes timerWarningPulse{
-  from{ transform: scale(1); }
+  from{
+    transform:scale(1);
+  }
+
   to{
-    transform: scale(1.08);
+    transform:scale(1.08);
     text-shadow:
       0 0 14px rgba(248,113,113,0.90),
       0 0 24px rgba(247,217,130,0.42);
@@ -1906,7 +1869,9 @@ button:active {
 }
 
 @media(max-width:900px){
-  .mode-grid{ grid-template-columns:1fr 1fr; }
+  .mode-grid{
+    grid-template-columns:1fr 1fr;
+  }
 }
 
 @media(max-width:560px){
@@ -1916,13 +1881,22 @@ button:active {
     overflow-y:auto;
   }
 
-  .mode-grid{ grid-template-columns:1fr; }
-  .mode-card{ min-height:250px; }
-  .mode-card img{ height:145px; }
+  .mode-grid{
+    grid-template-columns:1fr;
+  }
+
+  .mode-card{
+    min-height:250px;
+  }
+
+  .mode-card img{
+    height:145px;
+  }
 }
 
+
 /* =========================================
-   13. SOUND ON/OFF — THE EQUILIBRIUM CRISIS
+   14. SOUND ON/OFF — THE EQUILIBRIUM CRISIS
 ========================================= */
 
 .sound-toggle{
@@ -1930,32 +1904,24 @@ button:active {
   right:28px;
   bottom:24px;
   z-index:999;
-
   padding:10px 13px;
   border-radius:999px;
-
   border:1px solid rgba(56,189,248,0.30);
-
   background: linear-gradient(
       180deg,
       rgba(11,34,56,0.72),
       rgba(2,6,23,0.82)
   );
-
   color:rgba(224,242,254,0.78);
-
   cursor:pointer;
   font-size:11px;
   letter-spacing:.12em;
   text-transform:uppercase;
-
   box-shadow:
       0 0 18px rgba(0,0,0,.48),
       0 0 18px rgba(56,189,248,0.14),
       inset 0 0 10px rgba(0,0,0,0.72);
-
   backdrop-filter: blur(3px);
-
   transition:
       color .18s ease,
       border-color .18s ease,
@@ -1967,7 +1933,6 @@ button:active {
 .sound-toggle:hover{
   color:#f7d982;
   border-color:rgba(247,217,130,0.56);
-
   background: linear-gradient(
       180deg,
       rgba(19,57,86,0.84),
@@ -1979,7 +1944,6 @@ button:active {
       0 0 20px rgba(56,189,248,0.22),
       0 0 26px rgba(247,217,130,0.14),
       inset 0 0 10px rgba(0,0,0,0.74);
-
   transform: translateY(-1px);
 }
  
