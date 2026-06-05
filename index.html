@@ -4571,10 +4571,9 @@ function handlePracticeModeComplete(){
         ? Math.round((correctAnswers / totalAttempts) * 100)
         : 0;
 
-  if(gameMode === "exam"){
-     setRealmFlag("economicRealm_examDrillCompleted");
-     setRealmFlag(`economicRealm_${REALM_MISSION_KEY}_exam_complete`);
- }
+	if(gameMode === "exam"){
+ 	   markExamDrillCompleted();
+	}
 
     sendGameData({
         runID: runID,
@@ -7331,10 +7330,9 @@ if(modeAllowsRealmProgress()){
 // ❌ WRONG ANSWER BLOCK — ALL FAILURE LOGIC
 // =============================================
 
-    if(isBossRoom && gameMode === "standard"){
-        bossMistakeCountThisRun++;
-        saveGameState();
-    }
+	if(isBossRoom && gameMode === "standard"){
+  	  saveGameState();
+	}
        
     if (isBossRoom) {
         sfxWrong.volume = 0.7;
