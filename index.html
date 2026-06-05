@@ -772,28 +772,26 @@ button:active {
 /* =========================================
    6. ARTIFACT SYSTEM (REWARDS) — THE EQUILIBRIUM CRISIS
 ========================================= */
-    
+
+/* Reward popup — appears after boss victory */	
 #artifactDrop {
     margin-top: 20px;
     padding: 14px;
-
     background: radial-gradient(circle at center,
         rgba(56,189,248,0.18),
         rgba(15,42,64,0.70) 42%,
         rgba(4,14,28,0.94) 68%,
         rgba(2,6,23,0.99));
-
     border-radius: 12px;
     border: 1px solid rgba(247,217,130,0.38);
-
     box-shadow:
         0 0 22px rgba(56,189,248,0.24),
         0 0 44px rgba(247,217,130,0.16),
         inset 0 0 30px rgba(0,0,0,0.78);
-
     text-align: center;
 }
-    
+
+/* Artifact image in popup */		
 #artifactImage {
     width: 96px;
     margin-bottom: 8px;
@@ -806,25 +804,22 @@ button:active {
         drop-shadow(0 0 34px rgba(0,0,0,0.64));
 }
 
+/* Persistent artifact collection display (top panel) */		
 #artifactVault {
     margin-top: -6px;
     width: 220px;
     padding: 18px;
     border-radius: 12px;
-
     background: radial-gradient(circle at top,
         rgba(56,189,248,0.16),
         rgba(15,42,64,0.70) 44%,
         rgba(4,14,28,0.94) 70%,
         rgba(2,6,23,0.99));
-
     border: 1px solid rgba(56,189,248,0.26);
-
     box-shadow:
         0 0 20px rgba(56,189,248,0.20),
         0 0 38px rgba(247,217,130,0.12),
         inset 0 0 30px rgba(0,0,0,0.78);
-
     text-align: center;
 }
 
@@ -836,6 +831,7 @@ button:active {
         0 2px 6px rgba(0,0,0,0.88);
 }
 
+/* Layout container for artifact slots */		
 .vaultRow {
     display: flex;
     justify-content: center;
@@ -844,31 +840,30 @@ button:active {
     flex-wrap:wrap;
 }
 
+/* Individual artifact slot (default = locked state) */    	
 .artifactSlot {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-
     min-width: 70px;
     text-align:center;
     opacity: .28;
-
     transition: all .4s ease;
 }
 
+/* Locked artifact image (dimmed effect) */    		
 .artifactSlot img {
     width: 45px;
     margin-bottom:4px;
-
     filter:
         brightness(0.30)
         contrast(0.92)
         saturate(0.78);
-
     transition: all .4s ease;
 }
 
+/* Artifact label text */		
 .artifactSlot span {
     display: block;
     font-size: 13px;
@@ -877,6 +872,7 @@ button:active {
     line-height: 1.2;
 }
 
+/* Glow + animation for unlocked artifacts */		
 .artifactSlot.unlocked {
     opacity: 1;
     transform: scale(1.05);
@@ -887,7 +883,6 @@ button:active {
         drop-shadow(0 0 14px rgba(247,217,130,0.76))
         drop-shadow(0 0 26px rgba(56,189,248,0.44))
         drop-shadow(0 0 34px rgba(15,42,64,0.62));
-
     animation: relicPulse 2.5s ease-in-out infinite;
     backface-visibility: hidden;
     transform: translateZ(0);
@@ -905,11 +900,13 @@ button:active {
 /* =========================================
    7. BOSS EFFECTS & ATMOSPHERE — THE EQUILIBRIUM CRISIS
 ========================================= */
-    
+
+/* Hit animation — triggered when boss takes damage */		
 .boss-shake {
     animation: bossShake 0.5s cubic-bezier(.36,.07,.19,.97) both;
 }
 
+/* Boss image display — includes floating animation */	
 .bossIcon {
     width: 96px;
     height: auto;
@@ -947,6 +944,7 @@ button:active {
         drop-shadow(0 0 52px rgba(0,0,0,0.88));
 }
 
+/* Ambient torch effect — decorative, shown during gameplay */	
 .torch {
     position: absolute;
     width: 70px;
@@ -955,14 +953,13 @@ button:active {
     animation: torchFlicker 3s infinite alternate;
     pointer-events: none;
     opacity: .9;
-
     filter:
         drop-shadow(0 0 12px rgba(56,189,248,0.44))
         drop-shadow(0 0 24px rgba(247,217,130,0.24));
-
     display:none;
 }
 
+/* Torch positioning (left/right sides of screen) */
 .left-torch {
     left: 18px;
 }
@@ -976,97 +973,141 @@ button:active {
    8. FULLSCREEN SCREENS & TRANSITIONS — THE EQUILIBRIUM CRISIS
 ========================================= */
 
+/* Fullscreen start screen — shown before game begins */    		
 #startScreen{
   position: fixed;
   inset: 0;
-
   background-image:
     linear-gradient(
         rgba(2,6,23,0.18),
         rgba(2,6,23,0.58)
     ),
     url('start screen image.png');
-
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
   z-index: 100;
-
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-
   overflow-y: auto;
   overflow-x: hidden;
   padding: 0px 20px;
   box-sizing: border-box;
 }
 
+/* Transition overlay — appears between rooms (controlled by JS) */		
 #hallwayTransition {
   position: fixed;
   top: 0;
   left: 0;
-
   width: 100%;
   height: 100%;
-
   background:
     linear-gradient(
         rgba(2,6,23,0.54),
         rgba(2,6,23,0.78)
     ),
     url('hallway1.png');
-
   background-size: cover;
   background-position: center;
-
   display: flex;
   justify-content: center;
   align-items: center;
   text-align: center;
-
   color: #f7d982;
   font-size: 26px;
-
   z-index: 200;
   opacity: 0;
   pointer-events: none;
-
   transition: opacity 1.2s ease;
   animation: hallwayZoom 3.2s ease-out forwards;
 }
 
+/* Activates transition visibility (DO NOT REMOVE) */    		
 #hallwayTransition.active {
   opacity: 1;
 }
 
+/* Text container for transition messages */		
 #hallwayText {
   max-width: 600px;
-
   background: radial-gradient(circle at center,
       rgba(56,189,248,0.18),
       rgba(15,42,64,0.84) 54%,
       rgba(2,6,23,0.98));
-
   padding: 30px;
   border-radius: 12px;
-
   border: 1px solid rgba(247,217,130,0.34);
-
   box-shadow:
       0 0 24px rgba(0,0,0,0.84),
       0 0 30px rgba(56,189,248,0.20),
       0 0 44px rgba(247,217,130,0.13),
       inset 0 0 28px rgba(0,0,0,0.76);
-
   color: #f9e7ad;
-
   text-shadow:
       0 0 8px rgba(247,217,130,0.26),
       0 0 16px rgba(56,189,248,0.18),
       0 2px 6px rgba(0,0,0,0.90);
 }
+
+.game-modal{
+  position:fixed;
+  inset:0;
+  z-index:500;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:24px;
+  background:rgba(2,6,23,0.72);
+  backdrop-filter:blur(6px);
+}
+
+.game-modal-card{
+  width:min(520px, 100%);
+  padding:28px;
+  border-radius:18px;
+  background:
+    radial-gradient(circle at top,
+      rgba(56,189,248,0.16),
+      rgba(11,34,56,0.88) 48%,
+      rgba(2,6,23,0.98));
+  border:1px solid rgba(247,217,130,0.42);
+  box-shadow:
+    0 0 34px rgba(0,0,0,0.88),
+    0 0 38px rgba(56,189,248,0.24),
+    0 0 46px rgba(247,217,130,0.14),
+    inset 0 0 30px rgba(0,0,0,0.72);
+  text-align:center;
+}
+
+.game-modal-card h2{
+  margin:0 0 12px;
+  color:#f7d982;
+  font-size:30px;
+  letter-spacing:2px;
+  text-transform:uppercase;
+}
+
+.game-modal-card p{
+  margin:0 0 24px;
+  color:#e0f2fe;
+  font-size:18px;
+  line-height:1.45;
+}
+
+.game-modal-actions{
+  display:flex;
+  justify-content:center;
+  gap:12px;
+  flex-wrap:wrap;
+}
+
+.secondary-modal-btn{
+  color:#e0f2fe;
+  border-color:rgba(56,189,248,0.42);
+}	
 
 /* =========================================
    9. ANIMATION SYSTEM — THE EQUILIBRIUM CRISIS
@@ -1696,67 +1737,6 @@ button:active {
 /* =========================================
    UPGRADE: MODE SELECT / TIMER / MODAL — THE EQUILIBRIUM CRISIS
 ========================================= */
-.game-modal{
-  position:fixed;
-  inset:0;
-  z-index:500;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  padding:24px;
-  background:rgba(2,6,23,0.72);
-  backdrop-filter:blur(6px);
-}
-
-.game-modal-card{
-  width:min(520px, 100%);
-  padding:28px;
-  border-radius:18px;
-
-  background:
-    radial-gradient(circle at top,
-      rgba(56,189,248,0.16),
-      rgba(11,34,56,0.88) 48%,
-      rgba(2,6,23,0.98));
-
-  border:1px solid rgba(247,217,130,0.42);
-
-  box-shadow:
-    0 0 34px rgba(0,0,0,0.88),
-    0 0 38px rgba(56,189,248,0.24),
-    0 0 46px rgba(247,217,130,0.14),
-    inset 0 0 30px rgba(0,0,0,0.72);
-
-  text-align:center;
-}
-
-.game-modal-card h2{
-  margin:0 0 12px;
-  color:#f7d982;
-  font-size:30px;
-  letter-spacing:2px;
-  text-transform:uppercase;
-}
-
-.game-modal-card p{
-  margin:0 0 24px;
-  color:#e0f2fe;
-  font-size:18px;
-  line-height:1.45;
-}
-
-.game-modal-actions{
-  display:flex;
-  justify-content:center;
-  gap:12px;
-  flex-wrap:wrap;
-}
-
-.secondary-modal-btn{
-  color:#e0f2fe;
-  border-color:rgba(56,189,248,0.42);
-}
-	
 
 .mode-select-screen{
   position:fixed;
