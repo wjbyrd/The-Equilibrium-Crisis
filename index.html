@@ -2195,6 +2195,181 @@ body.game-active #soundToggle {
     transform: none !important;
 }
 		
+
+/* =========================================
+   15. POST-BATTLE MASTERY REPORT
+   Student-facing diagnostic after a completed run.
+========================================= */
+.mastery-report-screen{
+    text-align:left;
+    padding:24px;
+    color:#eef6ff;
+}
+
+.mastery-report-title{
+    text-align:center;
+    color:#f7d982;
+    font-size:32px;
+    letter-spacing:2px;
+    margin:0 0 8px 0;
+    text-shadow:
+        0 0 16px rgba(247,217,130,0.70),
+        0 0 30px rgba(56,189,248,0.28),
+        0 3px 8px rgba(0,0,0,0.92);
+}
+
+.mastery-report-subtitle{
+    text-align:center;
+    color:#c7ecff;
+    font-style:italic;
+    margin:0 auto 18px auto;
+    max-width:680px;
+    line-height:1.45;
+}
+
+.mastery-summary-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit, minmax(145px, 1fr));
+    gap:10px;
+    margin:18px 0;
+}
+
+.mastery-stat-card,
+.mastery-section{
+    background:
+        radial-gradient(circle at top,
+            rgba(56,189,248,0.14),
+            rgba(11,34,56,0.82) 45%,
+            rgba(2,6,23,0.96));
+    border:1px solid rgba(247,217,130,0.28);
+    border-radius:12px;
+    box-shadow:
+        0 0 18px rgba(0,0,0,0.62),
+        inset 0 0 20px rgba(0,0,0,0.52);
+}
+
+.mastery-stat-card{
+    padding:12px;
+    text-align:center;
+}
+
+.mastery-stat-label{
+    display:block;
+    color:#c7ecff;
+    font-size:11px;
+    letter-spacing:1.5px;
+    text-transform:uppercase;
+    margin-bottom:6px;
+}
+
+.mastery-stat-value{
+    display:block;
+    color:#f7d982;
+    font-size:24px;
+    font-weight:900;
+    text-shadow:0 0 10px rgba(247,217,130,0.40);
+}
+
+.mastery-section{
+    padding:16px;
+    margin:14px 0;
+}
+
+.mastery-section h3{
+    margin:0 0 12px 0;
+    color:#f7d982;
+    letter-spacing:1px;
+    text-shadow:0 0 10px rgba(247,217,130,0.34);
+}
+
+.mastery-verdict{
+    border-left:3px solid #f7d982;
+    padding:14px 16px;
+    margin:14px 0;
+    background:rgba(2,6,23,0.54);
+    border-radius:10px;
+    color:#e0f2fe;
+    line-height:1.5;
+}
+
+.mastery-row{
+    padding:10px 0;
+    border-top:1px solid rgba(224,242,254,0.12);
+}
+
+.mastery-row:first-child{
+    border-top:none;
+}
+
+.mastery-row-main{
+    display:flex;
+    justify-content:space-between;
+    gap:14px;
+    align-items:flex-start;
+}
+
+.mastery-row-name{
+    color:#eef6ff;
+    font-weight:700;
+    line-height:1.25;
+}
+
+.mastery-row-score{
+    color:#f7d982;
+    white-space:nowrap;
+    font-weight:800;
+}
+
+.mastery-row-meta{
+    display:block;
+    margin-top:5px;
+    color:rgba(199,236,255,0.72);
+    font-size:12px;
+    line-height:1.35;
+}
+
+.mastery-bar{
+    height:8px;
+    margin-top:8px;
+    border-radius:999px;
+    background:rgba(2,6,23,0.82);
+    overflow:hidden;
+    border:1px solid rgba(56,189,248,0.18);
+}
+
+.mastery-bar-fill{
+    height:100%;
+    width:0%;
+    border-radius:999px;
+    background:linear-gradient(90deg, #b91c1c, #38bdf8, #f7d982);
+    box-shadow:0 0 10px rgba(56,189,248,0.38);
+}
+
+.mastery-empty{
+    color:rgba(224,242,254,0.74);
+    font-style:italic;
+    margin:0;
+}
+
+.mastery-actions{
+    display:flex;
+    justify-content:center;
+    gap:10px;
+    flex-wrap:wrap;
+    margin-top:20px;
+}
+
+.mastery-actions button{
+    min-width:150px;
+}
+
+@media(max-width:768px){
+    .mastery-report-screen{ padding:14px; }
+    .mastery-report-title{ font-size:24px; }
+    .mastery-row-main{ flex-direction:column; gap:4px; }
+    .mastery-row-score{ white-space:normal; }
+}
+
 </style>
 </head>
 
@@ -5172,6 +5347,7 @@ function handlePracticeModeComplete(){
     `;
 
     document.getElementById("answers").innerHTML = `
+        <button class="continue-btn" onclick="showMasteryReportScreen()">View Mastery Report</button>
         <button class="continue-btn" onclick="returnToModeSelectFromRun()">Choose Another Battle</button>
     `;
 
@@ -5358,7 +5534,7 @@ legendary: [
   {"id":14004,sourceGame:"marketGate","q":"Refer to the PPF graph. Why does the opportunity cost of Good X rise as production moves from A toward E?","options":["Resources are increasingly less suited to producing additional X","Resources become perfectly adaptable between X and Y","The economy has escaped scarcity by moving along the curve","The money price of X must fall as X production rises"],"a":0,"tag":"ppf","type":"graph_interpretation","objective":"LO2.2","difficulty":"legendary","conceptCluster":"legendary_market_gate","primarySkill":"increasing_opportunity_cost","secondarySkills":[],"repairSkill":"increasing_opportunity_cost","commonError":"legendary_near_match_error","feedback":"A bowed-out PPF reflects increasing opportunity cost because resources are not equally suited to both goods.","image":"ppf.png"},
   {"id":14005,sourceGame:"marketGate","q":"A planner can produce more emergency generators only by pulling engineers away from water-system repairs. The first 10 generators cost 2 repairs, but the next 10 cost 6 repairs. What is the best interpretation of this production choice?","options":["Opportunity cost rises because resources are not equally adaptable across uses","Opportunity cost falls because the planner learns to produce generators faster","Opportunity cost disappears because both outputs are public priorities","Opportunity cost is only the dollar wage paid to the engineers"],"a":0,"tag":"ppf","type":"multi-step","objective":"LO2.2","difficulty":"legendary","conceptCluster":"legendary_market_gate","primarySkill":"increasing_opportunity_cost","secondarySkills":[],"repairSkill":"increasing_opportunity_cost","commonError":"legendary_near_match_error","feedback":"The increasing repair sacrifice shows increasing opportunity cost, not just a money-cost problem."},
 { "id": 14006, sourceGame: "marketGate", "q": "A city can repair 12 bridges or reopen 4 schools with the same crews. After shifting the easiest crews to schools, reopening 4 more schools would require giving up 18 bridge repairs. What does this show?", "options": ["Increasing opportunity cost because resources are not equally suited to both tasks", "Constant opportunity cost because schools and bridges use the same crews", "No opportunity cost because both projects help the public", "A demand shift because schools became more popular"], "a": 0, "tag": "ppf", "type": "multi-step", "objective": "LO2.2", "difficulty": "legendary", "conceptCluster": "legendary_market_gate", "primarySkill": "increasing_opportunity_cost", "secondarySkills": ["resource_specialization", "tradeoff_analysis"], "repairSkill": "increasing_opportunity_cost", "commonError": "treats_public_projects_as_costless", "feedback": "The rising bridge sacrifice shows increasing opportunity cost caused by specialized resources." },
-{ "id": 14007, sourceGame: "marketGate", "q": "Refer to a bowed-out PPF. Moving from point A to B costs 4 units of Y for 5 units of X. Moving from D to E costs 14 units of Y for 5 units of X. What is the best interpretation?", "options": ["The opportunity cost of X rises as more X is produced", "The opportunity cost of X falls as more X is produced", "The economy has eliminated scarcity", "The PPF must be a straight line"], "a": 0, "tag": "ppf", "type": "graph_interpretation", "objective": "LO2.2", "difficulty": "legendary", "conceptCluster": "legendary_market_gate", "primarySkill": "increasing_opportunity_cost", "secondarySkills": ["ppf_shape", "opportunity_cost"], "repairSkill": "increasing_opportunity_cost", "commonError": "confuses_total_output_with_marginal_tradeoff", "feedback": "On a bowed-out PPF, producing more of one good usually requires giving up larger amounts of the other good." },
+{ "id": 14007, sourceGame: "marketGate", "q": "Refer to a bowed-out PPF. Moving from point A to B costs 4 units of Y for 5 units of X. Moving from D to E costs 14 units of Y for 5 units of X. What is the best interpretation?", "options": ["The opportunity cost of X rises as more X is produced", "The opportunity cost of X falls as more X is produced", "The economy has eliminated scarcity", "The PPF must be a straight line"], "a": 0, "tag": "ppf", "type": "graph_interpretation", "objective": "LO2.2", "difficulty": "legendary", "conceptCluster": "legendary_market_gate", "primarySkill": "increasing_opportunity_cost", "secondarySkills": ["ppf_shape", "opportunity_cost"], "repairSkill": "increasing_opportunity_cost", "commonError": "confuses_total_output_with_marginal_tradeoff", "feedback": "On a bowed-out PPF, producing more of one good usually requires giving up larger amounts of the other good.", "image":"ppf.png" },
 { "id": 14008, sourceGame: "marketGate", "q": "An economy is inside its PPF because workers and machines are idle. Which change moves it toward efficiency but does not represent long-run growth?", "options": ["Putting idle workers and machines back to work on the existing frontier", "Inventing new technology that shifts the frontier outward", "Discovering new natural resources that expand production possibilities", "Training workers so the economy can produce more of both goods than before"], "a": 0, "tag": "ppf", "type": "trap", "objective": "LO2.2", "difficulty": "legendary", "conceptCluster": "legendary_market_gate", "primarySkill": "efficiency_vs_growth", "secondarySkills": ["idle_resources", "ppf_shift"], "repairSkill": "ppf_efficiency_status", "commonError": "confuses_movement_to_frontier_with_outward_shift", "feedback": "Using idle resources moves the economy toward the existing frontier. Growth shifts the frontier outward." },
 { "id": 14009, sourceGame: "marketGate", "q": "A PPF shifts outward for both goods after worker training improves. Which chapter connection is being tested?", "options": ["Human capital raises productive capacity", "A price ceiling creates a shortage", "A tax wedge reduces market size", "A positive statement becomes normative"], "a": 0, "tag": "ppf", "type": "synthesis", "objective": "LO2.2", "difficulty": "legendary", "conceptCluster": "legendary_market_gate", "primarySkill": "ppf_growth_source", "secondarySkills": ["human_capital", "productive_capacity"], "repairSkill": "ppf_shift_growth", "commonError": "treats_worker_training_as_movement_along_ppf_only", "feedback": "Better worker training improves human capital and can shift the PPF outward." },
 { "id": 14010, sourceGame: "marketGate", "q": "A student says, 'Point outside the PPF is inefficient because the economy is not producing there.' What is wrong with that statement?", "options": ["A point outside the PPF is unattainable with current resources, not merely inefficient", "A point outside the PPF is always efficient", "A point outside the PPF shows idle resources", "A point outside the PPF means opportunity cost is zero"], "a": 0, "tag": "ppf", "type": "trap", "objective": "LO2.2", "difficulty": "legendary", "conceptCluster": "legendary_market_gate", "primarySkill": "ppf_efficiency_status", "secondarySkills": ["attainable_vs_unattainable"], "repairSkill": "ppf_efficiency_status", "commonError": "confuses_unattainable_with_inefficient", "feedback": "Inside the PPF is inefficient. Outside the PPF is unattainable with current resources and technology." },
@@ -8549,6 +8725,7 @@ function handleScoreAttackVictory(){
     `;
 
     document.getElementById("answers").innerHTML = `
+        <button class="continue-btn" onclick="showMasteryReportScreen()">View Mastery Report</button>
         <button class="continue-btn" onclick="restartScoreAttackMode()">Retry Score Attack</button>
         <button class="continue-btn" onclick="returnToModeSelectFromRun()">Choose Another Battle</button>
     `;
@@ -8702,6 +8879,499 @@ else if(accuracy < 75){
         }
     }, 600);
 }     
+
+
+// =============================================
+// POST-BATTLE MASTERY REPORT
+// Student-facing diagnostic built from masteryState.
+// Uses existing tag, objective, skill, type, accuracy, and response-time data.
+// No answer keys. No question IDs. No nonsense.
+// =============================================
+let latestResultsScreenHTML = "";
+
+const EQUILIBRIUM_CRISIS_OBJECTIVE_LABELS = (typeof objectiveLabels !== "undefined") ? objectiveLabels : {};
+
+function escapeHTML(value){
+    return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}
+
+function titleCase(value){
+    return String(value || "")
+        .replace(/_/g, " ")
+        .replace(/-/g, " ")
+        .replace(/\s+/g, " ")
+        .trim()
+        .replace(/\b\w/g, letter => letter.toUpperCase());
+}
+
+function formatMasteryLabel(key){
+    if(!key) return "Unlabeled Concept";
+
+    const text = String(key);
+    const objectiveMatch = text.match(/^(LO\d+\.\d+)/);
+
+    if(objectiveMatch && EQUILIBRIUM_CRISIS_OBJECTIVE_LABELS[objectiveMatch[1]]){
+        const baseCode = objectiveMatch[1];
+        const baseLabel = `${baseCode} — ${EQUILIBRIUM_CRISIS_OBJECTIVE_LABELS[baseCode]}`;
+        const suffix = text
+            .replace(baseCode, "")
+            .replace(/^_+/, "")
+            .replace(/_/g, " ")
+            .trim();
+
+        return suffix
+            ? `${baseLabel}: ${titleCase(suffix)}`
+            : baseLabel;
+    }
+
+    return titleCase(text);
+}
+
+function formatPercent(value){
+    if(value === null || value === undefined || !Number.isFinite(Number(value))) return "—";
+    return `${Math.round(Number(value) * 100)}%`;
+}
+
+function formatSeconds(ms){
+    const numeric = Number(ms || 0);
+    if(!Number.isFinite(numeric) || numeric <= 0) return "—";
+    return `${Math.round(numeric / 1000)}s`;
+}
+
+function getBucketEntry(key, bucket, category = "concept"){
+    if(!bucket || !bucket.attempts){
+        return null;
+    }
+
+    const attempts = Number(bucket.attempts || 0);
+    const correct = Number(bucket.correct || 0);
+    const accuracy = attempts ? correct / attempts : null;
+    const typeForTiming = category === "type" ? key : "default";
+    const target = getTypeTargetMs(typeForTiming);
+    const avgTime = Number(bucket.avgTime || 0);
+    const timeRatio = avgTime && target ? avgTime / target : 1;
+    const fluency = accuracy === null
+        ? 0
+        : accuracy - clamp((timeRatio - 1) * 0.25, 0, 0.35);
+
+    return {
+        key,
+        label: formatMasteryLabel(key),
+        category,
+        attempts,
+        correct,
+        accuracy,
+        avgTime,
+        timeRatio,
+        fluency
+    };
+}
+
+function getEntriesFromBuckets(source, category = "concept"){
+    return Object.entries(source || {})
+        .map(([key, bucket]) => getBucketEntry(key, bucket, category))
+        .filter(Boolean);
+}
+
+function getTypeMasteryEntries(){
+    const typeBuckets = {};
+
+    Object.values(masteryState.byTag || {}).forEach(tagBucket => {
+        Object.entries(tagBucket.byType || {}).forEach(([type, bucket]) => {
+            if(!typeBuckets[type]){
+                typeBuckets[type] = { attempts: 0, correct: 0, avgTime: 0 };
+            }
+
+            const oldAttempts = typeBuckets[type].attempts;
+            const newAttempts = oldAttempts + Number(bucket.attempts || 0);
+
+            typeBuckets[type].correct += Number(bucket.correct || 0);
+            typeBuckets[type].avgTime = newAttempts
+                ? ((typeBuckets[type].avgTime * oldAttempts) + (Number(bucket.avgTime || 0) * Number(bucket.attempts || 0))) / newAttempts
+                : 0;
+            typeBuckets[type].attempts = newAttempts;
+        });
+    });
+
+    return getEntriesFromBuckets(typeBuckets, "type");
+}
+
+function sortStrongest(entries){
+    return [...entries]
+        .filter(entry => entry.attempts >= 2)
+        .sort((a,b) => (b.accuracy - a.accuracy) || (b.fluency - a.fluency) || (b.attempts - a.attempts));
+}
+
+function sortWeakest(entries){
+    const enoughData = entries.filter(entry => entry.attempts >= 2);
+    const pool = enoughData.length ? enoughData : entries;
+
+    return [...pool]
+        .sort((a,b) => (a.accuracy - b.accuracy) || (a.fluency - b.fluency) || (b.avgTime - a.avgTime));
+}
+
+function hasMeaningfulWeakness(entries, accuracyThreshold = 0.85){
+    return (entries || []).some(entry => {
+        if(!entry || entry.attempts < 2) return false;
+
+        const accuracy = entry.accuracy === null || entry.accuracy === undefined
+            ? 1
+            : Number(entry.accuracy);
+
+        return accuracy < accuracyThreshold || entry.timeRatio > 1.35;
+    });
+}
+
+function renderMasteryRows(entries, emptyText){
+    if(!entries || entries.length === 0){
+        return `<p class="mastery-empty">${escapeHTML(emptyText)}</p>`;
+    }
+
+    return entries.map(entry => {
+        const pct = Math.max(0, Math.min(100, Math.round((entry.accuracy || 0) * 100)));
+        const pace = entry.timeRatio > 1.25
+            ? "Slow response pattern"
+            : entry.timeRatio < 0.65
+                ? "Fast response pattern"
+                : "Stable pace";
+
+        return `
+            <div class="mastery-row">
+                <div class="mastery-row-main">
+                    <span class="mastery-row-name">${escapeHTML(entry.label)}</span>
+                    <span class="mastery-row-score">${formatPercent(entry.accuracy)} · ${entry.correct}/${entry.attempts}</span>
+                </div>
+                <span class="mastery-row-meta">Average response: ${formatSeconds(entry.avgTime)} · ${pace}</span>
+                <div class="mastery-bar"><div class="mastery-bar-fill" style="width:${pct}%"></div></div>
+            </div>
+        `;
+    }).join("");
+}
+
+function renderMasteryDiagnosticSection({
+    weaknessTitle,
+    signalTitle,
+    entries,
+    hasWeakness,
+    weaknessEmptyText,
+    cleanText
+}){
+    const title = hasWeakness ? weaknessTitle : signalTitle;
+    const body = hasWeakness
+        ? renderMasteryRows(entries, weaknessEmptyText)
+        : `<p class="mastery-empty">${escapeHTML(cleanText)}</p>`;
+
+    return `
+        <div class="mastery-section">
+            <h3>${escapeHTML(title)}</h3>
+            ${body}
+        </div>
+    `;
+}
+
+function getRecentBehaviorSignals(){
+    const recent = masteryState.recent || [];
+    let fastMisses = 0;
+    let slowCorrects = 0;
+    let recentCorrect = 0;
+    let recentTimeTotal = 0;
+
+    recent.forEach(item => {
+        const target = getTypeTargetMs(item.type || "default");
+        const responseTime = Number(item.responseTime || 0);
+
+        if(item.correct) recentCorrect++;
+        if(responseTime) recentTimeTotal += responseTime;
+
+        if(!item.correct && responseTime > 0 && responseTime < target * 0.55){
+            fastMisses++;
+        }
+
+        if(item.correct && responseTime > target * 1.20){
+            slowCorrects++;
+        }
+    });
+
+    return {
+        count: recent.length,
+        accuracy: recent.length ? recentCorrect / recent.length : null,
+        avgTime: recent.length ? recentTimeTotal / recent.length : 0,
+        fastMisses,
+        slowCorrects
+    };
+}
+
+
+function getMasteryReportModeName(){
+    if(gameMode === "timed-complete") return "Timed Trial";
+    if(gameMode === "score") return "Score Attack";
+    if(gameMode === "legendary") return "Legendary Mode";
+    if(gameMode === "exam") return "Exam Drill";
+    return getModeDisplayName();
+}
+
+function getMasteryReportData(){
+    const totalTimeMs = startTime ? (Date.now() - startTime) : 0;
+    const accuracy = totalAttempts > 0 ? correctAnswers / totalAttempts : 0;
+    const tagEntries = getEntriesFromBuckets(masteryState.byTag || {}, "tag");
+    const objectiveEntries = getEntriesFromBuckets(masteryState.byObjective || {}, "objective");
+    const skillEntries = getEntriesFromBuckets(masteryState.bySkill || {}, "skill");
+    const typeEntries = getTypeMasteryEntries();
+    const behavior = getRecentBehaviorSignals();
+
+    const strongest = sortStrongest([...objectiveEntries, ...tagEntries]).slice(0, 4);
+    const weakestObjectives = sortWeakest(objectiveEntries).slice(0, 4);
+    const weakestTypes = sortWeakest(typeEntries).slice(0, 3);
+    const weakestSkills = sortWeakest(skillEntries).slice(0, 3);
+
+    const hasObjectiveWeakness = hasMeaningfulWeakness(objectiveEntries, 0.85);
+    const hasTypeWeakness = hasMeaningfulWeakness(typeEntries, 0.85);
+    const hasSkillWeakness = hasMeaningfulWeakness(skillEntries, 0.85);
+    const hasBehaviorWeakness = behavior.fastMisses >= 2 || behavior.slowCorrects >= 3;
+    const noMajorWeakness = totalAttempts >= 8
+        && accuracy >= 0.85
+        && !hasObjectiveWeakness
+        && !hasTypeWeakness
+        && !hasSkillWeakness
+        && !hasBehaviorWeakness;
+
+    let verdict = "The Custodian found enough signal to build a report. Use it. Ignoring it would be malpractice with extra steps.";
+
+    if(totalAttempts < 5){
+        verdict = "The report is limited because this run has very few attempts. The Crisis needs more evidence before it can judge mastery with confidence.";
+    } else if(noMajorWeakness){
+        verdict = "No major weakness detected. That does not mean the Crisis is done with you. It means the next useful signal comes from harder pressure: Legendary Mode first, Score Attack after that.";
+    } else if(accuracy >= 0.90){
+        verdict = "Strong command. You cleared the Crisis with high accuracy. The weak signals below show where the next pressure test should focus.";
+    } else if(accuracy >= 0.75){
+        verdict = "Battle-ready, but not bulletproof. The weak areas below are where points will leak on an exam.";
+    } else {
+        verdict = "Unstable command. You finished, but the Crisis exposed weak signals. Hit the listed areas before chasing speed or Legendary Mode.";
+    }
+
+    const nextSteps = [];
+
+    if(noMajorWeakness){
+        nextSteps.push("Enter Legendary Mode next. The current run did not expose a major weak point, so harder multi-step and trap-heavy questions are the right next test.");
+        nextSteps.push("Use Score Attack after Legendary Mode feels stable. Speed pressure is useful only after mastery survives harder questions.");
+    } else {
+        if(hasObjectiveWeakness && weakestObjectives[0]){
+            nextSteps.push(`Review ${weakestObjectives[0].label}. That objective showed the weakest mastery signal.`);
+        }
+
+        if(hasTypeWeakness && weakestTypes[0]){
+            nextSteps.push(`Practice ${weakestTypes[0].label} questions. That question form caused the most trouble.`);
+        }
+
+        if(hasSkillWeakness && weakestSkills[0]){
+            nextSteps.push(`Drill ${weakestSkills[0].label}. That skill needs cleaner repetition.`);
+        }
+
+        if(behavior.fastMisses >= 2){
+            nextSteps.push("Slow down on traps and graph-style items. Fast misses are not fluency. They are just wrong answers with confidence.");
+        } else if(behavior.slowCorrects >= 3){
+            nextSteps.push("You can get answers right, but some correct responses were slow. Build speed only after the reasoning is automatic.");
+        }
+    }
+
+    if(nextSteps.length === 0){
+        nextSteps.push("Run a harder mode next. The current evidence does not show a major weak point. Make the Crisis earn its paycheck.");
+    }
+
+    return {
+        mode: getMasteryReportModeName(),
+        accuracy,
+        totalTimeMs,
+        timeString: formatTime(totalTimeMs),
+        totalAttempts,
+        correctAnswers,
+        maxStreak,
+        score: modeUsesScoreAttack() ? scoreAttackScore : null,
+        strongest,
+        weakestObjectives,
+        weakestTypes,
+        weakestSkills,
+        hasObjectiveWeakness,
+        hasTypeWeakness,
+        hasSkillWeakness,
+        noMajorWeakness,
+        behavior,
+        verdict,
+        nextSteps
+    };
+}
+
+function showMasteryReportScreen(){
+    const gameBox = document.getElementById("gameBox");
+    if(!gameBox) return;
+
+    if(!document.getElementById("masteryReportScreen")){
+        latestResultsScreenHTML = gameBox.innerHTML;
+    }
+
+    const report = getMasteryReportData();
+    const scoreCard = report.score !== null
+        ? `<div class="mastery-stat-card"><span class="mastery-stat-label">Score</span><span class="mastery-stat-value">${report.score}</span></div>`
+        : "";
+
+    gameBox.innerHTML = `
+        <div id="masteryReportScreen" class="mastery-report-screen">
+            <h1 class="mastery-report-title">THE CUSTODIAN'S REPORT</h1>
+            <p class="mastery-report-subtitle">Post-battle mastery readout for The Equilibrium Crisis. This is the signal behind the score.</p>
+
+            <div class="mastery-summary-grid">
+                <div class="mastery-stat-card"><span class="mastery-stat-label">Mode</span><span class="mastery-stat-value">${escapeHTML(report.mode)}</span></div>
+                <div class="mastery-stat-card"><span class="mastery-stat-label">Accuracy</span><span class="mastery-stat-value">${formatPercent(report.accuracy)}</span></div>
+                <div class="mastery-stat-card"><span class="mastery-stat-label">Correct</span><span class="mastery-stat-value">${report.correctAnswers}/${report.totalAttempts}</span></div>
+                <div class="mastery-stat-card"><span class="mastery-stat-label">Best Streak</span><span class="mastery-stat-value">${report.maxStreak}</span></div>
+                <div class="mastery-stat-card"><span class="mastery-stat-label">Time</span><span class="mastery-stat-value">${escapeHTML(report.timeString)}</span></div>
+                ${scoreCard}
+            </div>
+
+            <div class="mastery-verdict">${escapeHTML(report.verdict)}</div>
+
+            <div class="mastery-section">
+                <h3>Strongest Signals</h3>
+                ${renderMasteryRows(report.strongest, "No clear strength signal yet. The run did not create enough repeated evidence.")}
+            </div>
+
+            ${renderMasteryDiagnosticSection({
+                weaknessTitle: "Weakest Learning Objectives",
+                signalTitle: "Objective Signals",
+                entries: report.weakestObjectives,
+                hasWeakness: report.hasObjectiveWeakness,
+                weaknessEmptyText: "No objective weakness was detected. Either the run was clean, or there was not enough data.",
+                cleanText: "No major objective weakness detected. Push into Legendary Mode to see whether the signal holds under harder multi-step pressure."
+            })}
+
+            ${renderMasteryDiagnosticSection({
+                weaknessTitle: "Weakest Question Forms",
+                signalTitle: "Question Form Signals",
+                entries: report.weakestTypes,
+                hasWeakness: report.hasTypeWeakness,
+                weaknessEmptyText: "No question-type weakness was detected.",
+                cleanText: "No major question-form weakness detected. The next useful test is harder prompts, closer traps, and less obvious wording."
+            })}
+
+            ${renderMasteryDiagnosticSection({
+                weaknessTitle: "Weakest Skills",
+                signalTitle: "Skill Signals",
+                entries: report.weakestSkills,
+                hasWeakness: report.hasSkillWeakness,
+                weaknessEmptyText: "No skill weakness was detected.",
+                cleanText: "No major skill weakness detected. That is your cue to stop farming safe questions and enter Legendary Mode."
+            })}
+
+            <div class="mastery-section">
+                <h3>Behavior Signals</h3>
+                <div class="mastery-row">
+                    <div class="mastery-row-main">
+                        <span class="mastery-row-name">Recent Accuracy</span>
+                        <span class="mastery-row-score">${formatPercent(report.behavior.accuracy)}</span>
+                    </div>
+                    <span class="mastery-row-meta">Based on the last ${report.behavior.count} tracked attempts.</span>
+                </div>
+                <div class="mastery-row">
+                    <div class="mastery-row-main">
+                        <span class="mastery-row-name">Fast Misses</span>
+                        <span class="mastery-row-score">${report.behavior.fastMisses}</span>
+                    </div>
+                    <span class="mastery-row-meta">Fast wrong answers suggest careless reading or trap selection.</span>
+                </div>
+                <div class="mastery-row">
+                    <div class="mastery-row-main">
+                        <span class="mastery-row-name">Slow Corrects</span>
+                        <span class="mastery-row-score">${report.behavior.slowCorrects}</span>
+                    </div>
+                    <span class="mastery-row-meta">Slow correct answers suggest understanding is present but not automatic yet.</span>
+                </div>
+            </div>
+
+            <div class="mastery-section">
+                <h3>Next Moves</h3>
+                ${report.nextSteps.map(step => `<div class="mastery-row"><span class="mastery-row-name">${escapeHTML(step)}</span></div>`).join("")}
+            </div>
+
+            <div class="mastery-actions">
+                <button class="continue-btn" onclick="copyMasteryReport()">Copy Report</button>
+                ${report.noMajorWeakness && gameMode !== "legendary" ? `<button class="continue-btn" onclick="startSelectedMode('legendary')">Enter Legendary Mode</button>` : ""}
+                <button class="continue-btn secondary-modal-btn" onclick="restoreResultsScreen()">Back to Results</button>
+                <button class="continue-btn secondary-modal-btn" onclick="returnToModeSelectFromRun()">Choose Another Battle</button>
+            </div>
+        </div>
+    `;
+}
+
+function restoreResultsScreen(){
+    const gameBox = document.getElementById("gameBox");
+    if(!gameBox || !latestResultsScreenHTML) return;
+
+    gameBox.innerHTML = latestResultsScreenHTML;
+
+    const line = document.getElementById("archivistLine");
+    if(line){
+        line.style.opacity = 1;
+    }
+}
+
+function copyMasteryReport(){
+    const report = getMasteryReportData();
+
+    const lines = [
+        "The Equilibrium Crisis — Custodian's Mastery Report",
+        `Student: ${username}`,
+        `Mode: ${report.mode}`,
+        `Accuracy: ${formatPercent(report.accuracy)} (${report.correctAnswers}/${report.totalAttempts})`,
+        `Best Streak: ${report.maxStreak}`,
+        `Time: ${report.timeString}`,
+        report.score !== null ? `Score: ${report.score}` : null,
+        "",
+        "Strongest Signals:",
+        ...(report.strongest.length ? report.strongest.map(item => `- ${item.label}: ${formatPercent(item.accuracy)} (${item.correct}/${item.attempts})`) : ["- No clear strength signal yet."]),
+        "",
+        report.hasObjectiveWeakness ? "Weakest Learning Objectives:" : "Objective Signals:",
+        ...(report.hasObjectiveWeakness && report.weakestObjectives.length ? report.weakestObjectives.map(item => `- ${item.label}: ${formatPercent(item.accuracy)} (${item.correct}/${item.attempts})`) : ["- No major objective weakness detected. Try Legendary Mode next."]),
+        "",
+        report.hasTypeWeakness ? "Weakest Question Forms:" : "Question Form Signals:",
+        ...(report.hasTypeWeakness && report.weakestTypes.length ? report.weakestTypes.map(item => `- ${item.label}: ${formatPercent(item.accuracy)} (${item.correct}/${item.attempts})`) : ["- No major question-form weakness detected."]),
+        "",
+        report.hasSkillWeakness ? "Weakest Skills:" : "Skill Signals:",
+        ...(report.hasSkillWeakness && report.weakestSkills.length ? report.weakestSkills.map(item => `- ${item.label}: ${formatPercent(item.accuracy)} (${item.correct}/${item.attempts})`) : ["- No major skill weakness detected."]),
+        "",
+        "Next Moves:",
+        ...report.nextSteps.map(step => `- ${step}`)
+    ].filter(line => line !== null);
+
+    const text = lines.join("\n");
+
+    function markCopied(){
+        const btn = Array.from(document.querySelectorAll("button"))
+            .find(button => button.innerText === "Copy Report" || button.innerText === "Copied!");
+
+        if(!btn) return;
+        const original = btn.innerText;
+        btn.innerText = "Copied!";
+        setTimeout(() => { btn.innerText = original; }, 1800);
+    }
+
+    if(navigator.clipboard && navigator.clipboard.writeText){
+        navigator.clipboard.writeText(text).then(markCopied);
+        return;
+    }
+
+    const temp = document.createElement("textarea");
+    temp.value = text;
+    document.body.appendChild(temp);
+    temp.select();
+    document.execCommand("copy");
+    temp.remove();
+    markCopied();
+}
 
 // =============================
 // UTILITIES
@@ -8888,7 +9558,6 @@ function sendGameData(data) {
 </script>
 </body>
 </html>
-
 
 
 
