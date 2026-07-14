@@ -3349,12 +3349,16 @@ function loadSavedGame(){
 
         conceptMemory = saveData.conceptMemory || {};
         masteryState = saveData.masteryState || { byTag: {}, byObjective: {}, bySkill: {}, recent: [] };
+        masteryState.byTag = masteryState.byTag || {};
+        masteryState.byObjective = masteryState.byObjective || {};
+        masteryState.bySkill = masteryState.bySkill || {};
+        masteryState.recent = masteryState.recent || [];
         adaptiveMode = saveData.adaptiveMode || "support";
         tagHistory = saveData.tagHistory || [];
         lastTypes = saveData.lastTypes || [];
 
-        usedQuestions = saveData.usedQuestions || usedQuestions;
-        questionHistory = saveData.questionHistory || questionHistory;
+        usedQuestions = { ...usedQuestions, ...(saveData.usedQuestions || {}) };
+        questionHistory = { ...questionHistory, ...(saveData.questionHistory || {}) };
         resumedSavedRunThisSession = !!saveData.resumedSavedRunThisSession;
         bossMistakeCountThisRun = Number(saveData.bossMistakeCountThisRun || 0);
         bossesDefeatedThisRun = Number(saveData.bossesDefeatedThisRun || 0);
@@ -3376,9 +3380,6 @@ function clearSavedGame(){
 
     if(modeAllowsSave()){
         localStorage.removeItem("gauntletRoom");
-        localStorage.removeItem("vaultShard");
-        localStorage.removeItem("vaultGauge");
-        localStorage.removeItem("vaultSeal");
     }
 }
 
@@ -3492,6 +3493,8 @@ function getSkillKey(question){
 function getSkillBucket(question){
     const skill = getSkillKey(question);
     if(!skill) return null;
+
+    masteryState.bySkill = masteryState.bySkill || {};
 
     if(!masteryState.bySkill[skill]){
         masteryState.bySkill[skill] = {
@@ -5076,11 +5079,13 @@ if(!hasSavedRun){
     // Every new run starts with a clean score, while best score stays in localStorage.
     resetScoreAttackState();
 
-    if(modeAllowsSave()){
+    if(gameMode === "standard"){
         localStorage.removeItem("gauntletRoom");
 	    localStorage.removeItem("vaultShard");
 	    localStorage.removeItem("vaultGauge");
 	    localStorage.removeItem("vaultSeal");
+    } else if(gameMode === "legendary"){
+        localStorage.removeItem("gauntletRoom");
     }
 	if(modeAllowsRealmProgress()){
 	    localStorage.removeItem(REALM_COMPLETE_KEY);
@@ -5324,6 +5329,7 @@ function endTimedModeRun(){
     `;
 
     document.getElementById("answers").innerHTML = `
+        <button class="continue-btn" onclick="showMasteryReportScreen()">View Mastery Report</button>
         <button class="continue-btn" onclick="restartTimedMode()">Retry Timed Trial</button>
         <button class="continue-btn" onclick="returnToModeSelectFromRun()">Choose Another Crisis Run</button>
     `;
@@ -7539,63 +7545,49 @@ function loadQuestion() {
 
    // 3. Select the Question
 if (isBoss) {
-    // 1. If it's a new fight, build a three-question boss pool by objective.
-    // Boss pools are scaffolded by LO, not random tag soup.
+    // 1. If it is a new fight, build an integrated three-question boss set.
+    // The Equilibrium Crisis merges Market Gate and National Ledger material.
+    // These boss banks are not authored as same-objective scaffolds, so forcing
+    // an LO triad strands most of the bank. Select across distinct objectives instead.
     if (bossHealth === 3 || !bossPool || bossPool.length === 0) {
         const bank = [...(questionBanks[diff] || [])];
-        let chosenObjective = getWeakestBossObjective(bank);
 
-        let candidatePool = chosenObjective
-            ? bank.filter(q => getBossObjectiveKey(q) === chosenObjective)
-            : [];
-
-        // Prefer unused questions inside the chosen objective.
-        let unusedCandidatePool = candidatePool.filter(q => {
+        let candidatePool = bank.filter(q => {
             if(!q) return false;
-            if(usedQuestions[diff] && usedQuestions[diff].includes(q.id)) return false;
-            return true;
+            return !(usedQuestions[diff] || []).includes(q.id);
         });
 
-        if(unusedCandidatePool.length >= 3){
-            candidatePool = unusedCandidatePool;
-        }
-
-        // If the weakest objective cannot support a full boss set, use another objective with at least 3 questions.
-        if (candidatePool.length < 3) {
-            const eligibleObjectives = [...new Set(
-                bank.map(q => getBossObjectiveKey(q)).filter(Boolean)
-            )].filter(obj =>
-                bank.filter(q => getBossObjectiveKey(q) === obj).length >= 3
-            );
-
-            if(eligibleObjectives.length > 0){
-                const randomObjective = eligibleObjectives[Math.floor(Math.random() * eligibleObjectives.length)];
-                candidatePool = bank.filter(q => getBossObjectiveKey(q) === randomObjective);
-            }
-        }
-
-        // Last-resort fallback: use any unused questions from this difficulty.
-        if (candidatePool.length < 3) {
-            candidatePool = bank.filter(q => {
-                if (!q) return false;
-                if (usedQuestions[diff] && usedQuestions[diff].includes(q.id)) return false;
-                return true;
-            });
-        }
-
-        // If used-question filtering leaves too few, reset and use the whole bank.
-        if (candidatePool.length < 3) {
-            if (usedQuestions[diff]) usedQuestions[diff] = [];
+        // Once fewer than three unused questions remain, reopen the full bank.
+        if(candidatePool.length < 3){
+            usedQuestions[diff] = [];
             candidatePool = [...bank];
         }
 
-		if (diff === "legendaryBoss") {
-   		    bossPool = shuffle([...candidatePool]).slice(0, 3);
-		} else {
-		    bossPool = [...candidatePool]
-   		        .sort((a, b) => a.id - b.id)
-                .slice(0, 3);
+        const shuffledCandidates = shuffle([...candidatePool]);
+        const selected = [];
+        const selectedObjectives = new Set();
+
+        // First pass: favor three different learning objectives.
+        for(const question of shuffledCandidates){
+            const objectiveKey = getBossObjectiveKey(question) || `question_${question.id}`;
+            if(selectedObjectives.has(objectiveKey)) continue;
+
+            selected.push(question);
+            selectedObjectives.add(objectiveKey);
+
+            if(selected.length === 3) break;
         }
+
+        // Fallback: fill any remaining slot without duplicating a question.
+        if(selected.length < 3){
+            for(const question of shuffledCandidates){
+                if(selected.some(item => item.id === question.id)) continue;
+                selected.push(question);
+                if(selected.length === 3) break;
+            }
+        }
+
+        bossPool = selected;
 
         if (usedQuestions[diff]) {
             bossPool.forEach(q => {
@@ -7987,7 +7979,6 @@ recordAdaptiveAttempt(currentQuestion, isCorrect, responseTime);
     if (isCorrect) {
         streak++;
         if (streak > maxStreak) maxStreak = streak;
-        recordRealmCorrectAnswer();
         recordRealmStreak(streak);
     } else {
         streak = 0;
@@ -8061,7 +8052,6 @@ recordAdaptiveAttempt(currentQuestion, isCorrect, responseTime);
 
 		correctAnswers++;
 		recordRealmCorrectAnswer();
-		recordRealmStreak(streak);
         handleStreakVisuals();
        
         // --- STAGED REMEDIATION SUCCESS PATH ---
@@ -8784,6 +8774,7 @@ function handleLegendaryVictory(){
     `;
 
     document.getElementById("answers").innerHTML = `
+        <button class="continue-btn" onclick="showMasteryReportScreen()">View Mastery Report</button>
         <button class="continue-btn" onclick="returnToModeSelectFromRun()">Choose Another Battle</button>
     `;
 
@@ -8999,6 +8990,9 @@ else if(accuracy < 75){
         <div style="display:flex; gap:10px; justify-content:center; margin-top:20px;">
             <button id="shareBtn" onclick="copyResults()" style="background:linear-gradient(180deg,#f0c86a,#9a6b1f); color:#111827; font-weight:bold; padding:12px 24px; border:1px solid rgba(255,255,255,0.25); border-radius:6px; cursor:pointer;">
                 Copy Results
+            </button>
+            <button onclick="showMasteryReportScreen()" style="background:linear-gradient(180deg,#1d4d73,#04101f); color:#f7d982; font-weight:bold; padding:12px 24px; border:1px solid rgba(247,217,130,0.45); border-radius:6px; cursor:pointer;">
+                View Mastery Report
             </button>
             <button onclick="location.reload()" style="background:transparent; color:#e5e7eb; border:1px solid rgba(229,231,235,0.55); padding:12px 24px; border-radius:6px; cursor:pointer;">
                 Play The Crisis Again
