@@ -4265,6 +4265,60 @@ function getBossQuestionFingerprint(question){
         .trim();
 }
 
+
+function getBossNarrativeStage(question){
+    const stage = String(question?.bossStage || "").toLowerCase();
+    return stage === "opening" || stage === "final" ? stage : null;
+}
+
+function orderBossQuestionSet(selected, available){
+    const ordered = [...(selected || [])];
+
+    const replaceDuplicateStage = stage => {
+        const stageIndexes = ordered
+            .map((question, index) => ({ question, index }))
+            .filter(item => getBossNarrativeStage(item.question) === stage)
+            .map(item => item.index);
+
+        stageIndexes.slice(1).forEach(index => {
+            const selectedIds = new Set(
+                ordered.map(question => question?.id).filter(id => id !== undefined)
+            );
+            const candidates = shuffle(
+                (available || []).filter(question =>
+                    question &&
+                    !selectedIds.has(question.id) &&
+                    getBossNarrativeStage(question) !== stage
+                )
+            );
+            const replacement = candidates.find(question =>
+                getBossNarrativeStage(question) === null
+            ) || candidates[0];
+
+            if(replacement){
+                ordered[index] = replacement;
+            }
+        });
+    };
+
+    replaceDuplicateStage("final");
+    replaceDuplicateStage("opening");
+
+    const stageRank = stage =>
+        stage === "opening" ? 0 : stage === "final" ? 2 : 1;
+
+    return ordered
+        .map((question, index) => ({
+            question,
+            index,
+            stage: getBossNarrativeStage(question)
+        }))
+        .sort((a, b) =>
+            stageRank(a.stage) - stageRank(b.stage) || a.index - b.index
+        )
+        .map(item => item.question);
+}
+
 function getRecentQuestionFingerprints(limitPerPool = 15){
     const recentIds = new Set();
 
@@ -4369,7 +4423,7 @@ function buildBossQuestionSet(bank, poolName, chosenObjective){
         remaining.splice(remaining.findIndex(item => item.id === picked.id), 1);
     }
 
-    return selected;
+    return orderBossQuestionSet(selected, available);
 }
 
 function getSelectionProfile(){
@@ -5951,7 +6005,7 @@ easyBoss: [
   // =====================================================
   // SET 1 — TRADEOFFS + GDP MEASUREMENT
   // =====================================================
-  { id: 17000, q: "The Signal Breaker opens the first gate: 'Every choice leaves something behind.' What is a tradeoff?", options: ["Giving up one thing to get something else", "A tax placed on buyers", "A legal maximum price", "A measure of total national output"], a: 0, tag: "tradeoffs", type: "definition", objective: "LO1.1", difficulty: "easyBoss", conceptCluster: "core_principles_gdp_measurement", primarySkill: "tradeoff_identification", secondarySkills: ["scarcity_definition"], repairSkill: "tradeoff_identification", commonError: "confuses_tradeoff_with_money_price", sourceGame: "equilibriumCrisis", feedback: "A tradeoff exists when choosing one option means giving up another option." },
+  { id: 17000, bossStage: "opening", q: "The Signal Breaker opens the first gate: 'Every choice leaves something behind.' What is a tradeoff?", options: ["Giving up one thing to get something else", "A tax placed on buyers", "A legal maximum price", "A measure of total national output"], a: 0, tag: "tradeoffs", type: "definition", objective: "LO1.1", difficulty: "easyBoss", conceptCluster: "core_principles_gdp_measurement", primarySkill: "tradeoff_identification", secondarySkills: ["scarcity_definition"], repairSkill: "tradeoff_identification", commonError: "confuses_tradeoff_with_money_price", sourceGame: "equilibriumCrisis", feedback: "A tradeoff exists when choosing one option means giving up another option." },
   { id: 17001, q: "A student works an extra shift instead of studying for an economics exam. What is part of the opportunity cost of working?", options: ["The value of the lost study time", "Only the wage earned from working", "Only the price of the textbook", "The total GDP of the economy"], a: 0, tag: "opportunity_cost", type: "interpretation", objective: "LO1.2", difficulty: "easyBoss", conceptCluster: "core_principles_gdp_measurement", primarySkill: "opportunity_cost_identification", secondarySkills: ["tradeoff_identification"], repairSkill: "opportunity_cost_definition", commonError: "ignores_nonmoney_opportunity_cost", sourceGame: "equilibriumCrisis", feedback: "Opportunity cost includes what is given up, including time and the value of the next best alternative." },
   { id: 17002, q: "The Signal Breaker shifts the trap: a country produces more goods this year, but some of that production replaces worn-out equipment. What GDP issue is being hinted at?", options: ["GDP measures production, not all well-being", "GDP counts only leisure time", "GDP automatically subtracts every environmental cost", "GDP ignores all market production"], a: 0, tag: "gdp_wellbeing", type: "trap", objective: "LO24.5", difficulty: "easyBoss", conceptCluster: "gdp_measurement", primarySkill: "gdp_wellbeing_limits", secondarySkills: ["gdp_definition"], repairSkill: "gdp_wellbeing_limits", commonError: "treats_gdp_as_perfect_wellbeing_measure", sourceGame: "equilibriumCrisis", feedback: "GDP measures market production, but it is not a perfect measure of well-being." },
 
@@ -5988,7 +6042,7 @@ easyBoss: [
   // =====================================================
   { id: 17015, q: "The Signal Breaker asks: 'Which statement is positive?'", options: ["Investment spending raises GDP, other things equal", "The government should spend more", "GDP is the fairest possible measure", "Every country should maximize GDP at all costs"], a: 0, tag: "positive_normative", type: "definition", objective: "LO2.4", difficulty: "easyBoss", conceptCluster: "economic_thinking_gdp", primarySkill: "positive_vs_normative", secondarySkills: ["policy_statement_classification"], repairSkill: "positive_vs_normative", commonError: "confuses_policy_or_value_claims_with_testable_claims", sourceGame: "equilibriumCrisis", feedback: "A positive statement is testable. If investment rises and other components stay fixed, GDP rises." },
   { id: 17016, q: "A country has higher GDP, but also more pollution and longer work hours. What should the student conclude?", options: ["GDP is useful, but it does not capture every part of well-being", "GDP must have fallen", "GDP includes leisure and pollution perfectly", "GDP only measures unemployment"], a: 0, tag: "gdp_wellbeing", type: "interpretation", objective: "LO24.5", difficulty: "easyBoss", conceptCluster: "gdp_measurement", primarySkill: "gdp_wellbeing_limits", secondarySkills: ["gdp_definition"], repairSkill: "gdp_wellbeing_limits", commonError: "treats_gdp_as_complete_measure_of_living_standards", sourceGame: "equilibriumCrisis", feedback: "GDP is useful because income matters, but it leaves out things like leisure, environmental quality, and some nonmarket activity." },
-  { id: 17017, q: "The Signal Breaker gives the final trap: GDP rises after a natural disaster because rebuilding spending increases. What is the best interpretation?", options: ["GDP can rise without well-being rising", "GDP cannot rise after disasters", "GDP only counts happiness", "Rebuilding is never counted in GDP"], a: 0, tag: "gdp_wellbeing", type: "trap", objective: "LO24.5", difficulty: "easyBoss", conceptCluster: "gdp_measurement", primarySkill: "gdp_wellbeing_limits", secondarySkills: ["gdp_counted_not_counted"], repairSkill: "gdp_wellbeing_limits", commonError: "assumes_higher_gdp_always_means_higher_wellbeing", sourceGame: "equilibriumCrisis", feedback: "GDP can rise when rebuilding activity increases, but that does not automatically mean well-being improved." },
+  { id: 17017, bossStage: "final", q: "The Signal Breaker gives the final trap: GDP rises after a natural disaster because rebuilding spending increases. What is the best interpretation?", options: ["GDP can rise without well-being rising", "GDP cannot rise after disasters", "GDP only counts happiness", "Rebuilding is never counted in GDP"], a: 0, tag: "gdp_wellbeing", type: "trap", objective: "LO24.5", difficulty: "easyBoss", conceptCluster: "gdp_measurement", primarySkill: "gdp_wellbeing_limits", secondarySkills: ["gdp_counted_not_counted"], repairSkill: "gdp_wellbeing_limits", commonError: "assumes_higher_gdp_always_means_higher_wellbeing", sourceGame: "equilibriumCrisis", feedback: "GDP can rise when rebuilding activity increases, but that does not automatically mean well-being improved." },
 
   // =====================================================
   // SET 7 — CIRCULAR FLOW + GDP COMPONENT CLASSIFICATION
@@ -6002,7 +6056,7 @@ easyBoss: [
   // =====================================================
   { id: 17021, q: "The Signal Breaker asks which question is macroeconomic.", options: ["How fast is the nation's GDP growing?", "How many workers should one coffee shop hire?", "How should one consumer spend a gift card?", "How should one firm price one sandwich?"], a: 0, tag: "micro_macro", type: "definition", objective: "LO2.3", difficulty: "easyBoss", conceptCluster: "economic_thinking_gdp", primarySkill: "micro_vs_macro", secondarySkills: ["macroeconomics_definition"], repairSkill: "micro_vs_macro", commonError: "confuses_individual_market_with_economy_wide_question", sourceGame: "equilibriumCrisis", feedback: "GDP growth is an economy-wide issue, so it is macroeconomic." },
   { id: 17022, q: "Why is GDP usually studied in macroeconomics rather than microeconomics?", options: ["It measures total production for the economy as a whole", "It measures one firm's output only", "It measures only one household's choices", "It tracks only one product's demand curve"], a: 0, tag: "gdp", type: "interpretation", objective: "LO24.2", difficulty: "easyBoss", conceptCluster: "gdp_measurement", primarySkill: "gdp_as_macro_measure", secondarySkills: ["micro_vs_macro"], repairSkill: "gdp_definition", commonError: "treats_gdp_as_single_firm_measure", sourceGame: "equilibriumCrisis", feedback: "GDP measures aggregate production for the whole economy, which makes it a macroeconomic measure." },
-  { id: 17023, q: "The Signal Breaker's final gate asks: which pairing is correct?", options: ["GDP growth is macro; one firm's hiring decision is micro", "GDP growth is micro; one firm's hiring decision is macro", "Both are always micro", "Both are always normative"], a: 0, tag: "micro_macro", type: "trap", objective: "LO2.3", difficulty: "easyBoss", conceptCluster: "economic_thinking_gdp", primarySkill: "micro_macro_pairing", secondarySkills: ["gdp_as_macro_measure"], repairSkill: "micro_vs_macro", commonError: "reverses_micro_and_macro", sourceGame: "equilibriumCrisis", feedback: "GDP growth concerns the whole economy, while one firm's hiring decision is about an individual firm." }
+  { id: 17023, bossStage: "final", q: "The Signal Breaker's final gate asks: which pairing is correct?", options: ["GDP growth is macro; one firm's hiring decision is micro", "GDP growth is micro; one firm's hiring decision is macro", "Both are always micro", "Both are always normative"], a: 0, tag: "micro_macro", type: "trap", objective: "LO2.3", difficulty: "easyBoss", conceptCluster: "economic_thinking_gdp", primarySkill: "micro_macro_pairing", secondarySkills: ["gdp_as_macro_measure"], repairSkill: "micro_vs_macro", commonError: "reverses_micro_and_macro", sourceGame: "equilibriumCrisis", feedback: "GDP growth concerns the whole economy, while one firm's hiring decision is about an individual firm." }
 ],
    
 mediumBoss: [
@@ -6060,7 +6114,7 @@ mediumBoss: [
   // =====================================================
   { id: 18021, q: "The Growth Sentinel says a country spends more on education and infrastructure today to raise future productivity. What core economic idea is present?", options: ["Current resources versus future capacity", "A guarantee that inflation becomes zero", "A binding price ceiling in labor markets", "A discouraged-worker effect"], a: 0, tag: "growth_policy", type: "interpretation", objective: "LO26.4", difficulty: "mediumBoss", conceptCluster: "growth_policy_tradeoffs", primarySkill: "growth_policy_tradeoff", secondarySkills: ["opportunity_cost", "productivity_growth"], repairSkill: "growth_policy_productivity", commonError: "ignores_current_opportunity_cost_of_investment", sourceGame: "equilibriumCrisis", feedback: "Policies that build future productivity often require giving up resources that could have been used elsewhere today." },
   { id: 18022, q: "A country has more machines per worker, but each additional machine adds less extra output than the one before. What concept is being tested?", options: ["Diminishing returns to capital", "Substitution bias", "Frictional unemployment", "A binding price ceiling"], a: 0, tag: "growth", type: "definition", objective: "LO26.4", difficulty: "mediumBoss", conceptCluster: "growth_capital_diminishing_returns", primarySkill: "diminishing_returns_to_capital", secondarySkills: ["capital_deepening", "productivity_growth"], repairSkill: "diminishing_returns", commonError: "thinks_more_capital_always_creates_constant_growth", sourceGame: "equilibriumCrisis", feedback: "Diminishing returns means each additional unit of capital adds less extra output once capital is already abundant." },
-  { id: 18023, q: "The Growth Sentinel gives the final medium trap: a policy boosts productivity over time but temporarily displaces workers in old industries. Which answer best synthesizes the issue?", options: ["Long-run growth can coexist with short-run structural unemployment", "Productivity growth means no one ever loses a job", "Structural unemployment only happens when CPI rises", "Worker displacement proves the economy cannot grow"], a: 0, tag: "structural_unemployment", type: "trap", objective: "LO29.3", difficulty: "mediumBoss", conceptCluster: "growth_structural_change_labor_markets", primarySkill: "growth_structural_unemployment_link", secondarySkills: ["productivity_growth", "labor_market_adjustment"], repairSkill: "structural_unemployment_definition", commonError: "assumes_growth_and_worker_displacement_cannot_coexist", sourceGame: "equilibriumCrisis", feedback: "Productivity growth can raise long-run living standards while creating short-run adjustment costs for workers whose skills no longer match available jobs." }
+  { id: 18023, bossStage: "final", q: "The Growth Sentinel gives the final medium trap: a policy boosts productivity over time but temporarily displaces workers in old industries. Which answer best synthesizes the issue?", options: ["Long-run growth can coexist with short-run structural unemployment", "Productivity growth means no one ever loses a job", "Structural unemployment only happens when CPI rises", "Worker displacement proves the economy cannot grow"], a: 0, tag: "structural_unemployment", type: "trap", objective: "LO29.3", difficulty: "mediumBoss", conceptCluster: "growth_structural_change_labor_markets", primarySkill: "growth_structural_unemployment_link", secondarySkills: ["productivity_growth", "labor_market_adjustment"], repairSkill: "structural_unemployment_definition", commonError: "assumes_growth_and_worker_displacement_cannot_coexist", sourceGame: "equilibriumCrisis", feedback: "Productivity growth can raise long-run living standards while creating short-run adjustment costs for workers whose skills no longer match available jobs." }
 ],
    
 finalBoss: [
@@ -8323,6 +8377,8 @@ if(modeAllowsRealmProgress()){
         localStorage.setItem("equilibriumCrisisVaultSeal", "true");
         showArtifact(artifacts.seal.img, artifacts.seal.title, artifacts.seal.text);
     }
+
+    updateMissionArtifactCountFromVault();
 }
 
 // ... (Inside the Boss Victory check)
@@ -9841,5 +9897,4 @@ function sendGameData(data) {
 </script>
 </body>
 </html>
-
 
