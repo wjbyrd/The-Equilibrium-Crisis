@@ -54,6 +54,7 @@ If you break something:
 <!DOCTYPE html>
 <html>
 <head>
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
     
 <!-- Title can be changed to whatever the game needs -->
@@ -2518,7 +2519,7 @@ Respect structure strictly.
 <div id="startScreen">
   <div class="start-content">
     <h1 class="title">THE EQUILIBRIUM CRISIS</h1>
-    <input id="emailInput" type="email" placeholder="Enter your school email" class="name-input">
+    <input id="emailInput" type="email" placeholder="Enter your school email" class="name-input" aria-label="School email">
     <button class="start-btn" onclick="showModeSelect()">ENTER THE CRISIS</button>
 	<button id="continueRunBtn" class="start-btn secondary-start-btn" onclick="continueSavedRun()" style="display:none;">
     CONTINUE STANDARD RUN</button>
@@ -2626,7 +2627,7 @@ DO NOT REMOVE:
     <div id="gameShell">
         <div id="wizardBox">
             <div id="wizardName">The Custodian</div>
-            <img src="../chancellor.webp" id="wizardImage" alt="The Chancellor">
+            <img src="../chancellor.webp" id="wizardImage" alt="The Custodian">
         </div>
 
         <!-- GAME -->
@@ -2868,7 +2869,7 @@ let runID = "";
 let questionStartTime = 0;
 let streak = 0; 
 let startTime; // Will be set in startGame()
-let room = localStorage.getItem("gauntletRoom") ? parseInt(localStorage.getItem("gauntletRoom")) : 1;
+let room = localStorage.getItem("equilibriumCrisisRoom") ? parseInt(localStorage.getItem("equilibriumCrisisRoom")) : 1;
 let currentQuestion = null;
 let detourActive = false;
 let detourReturnRoom = null;
@@ -3031,7 +3032,7 @@ function setMissionArtifactCount(count){
 }
 
 function updateMissionArtifactCountFromVault(){
-    const artifactCount = ["vaultShard", "vaultGauge", "vaultSeal"]
+    const artifactCount = ["vaultShard", "vaultGauge", "equilibriumCrisisVaultSeal"]
         .filter(key => localStorage.getItem(key) === "true").length;
 
     setMissionArtifactCount(artifactCount);
@@ -3308,12 +3309,12 @@ function saveGameState(){
         artifacts: {
             vaultShard: localStorage.getItem("vaultShard") === "true",
             vaultGauge: localStorage.getItem("vaultGauge") === "true",
-            vaultSeal: localStorage.getItem("vaultSeal") === "true"
+  	  vaultSeal: localStorage.getItem("equilibriumCrisisVaultSeal") === "true"
         }
     };
 
     localStorage.setItem(getSaveKey(), JSON.stringify(saveData));
-    localStorage.setItem("gauntletRoom", String(room));
+        localStorage.setItem("equilibriumCrisisRoom", String(room));
 
     if(modeAllowsRealmProgress()){
 	    localStorage.setItem(REALM_STARTED_KEY, "true");
@@ -3365,7 +3366,7 @@ function loadSavedGame(){
 
         if(saveData.artifacts?.vaultShard) localStorage.setItem("vaultShard", "true");
         if(saveData.artifacts?.vaultGauge) localStorage.setItem("vaultGauge", "true");
-        if(saveData.artifacts?.vaultSeal) localStorage.setItem("vaultSeal", "true");
+		if(saveData.artifacts?.vaultSeal) localStorage.setItem("equilibriumCrisisVaultSeal", "true");
 
         return true;
     } catch(error){
@@ -3379,7 +3380,7 @@ function clearSavedGame(){
     localStorage.removeItem(getSaveKey());
 
     if(modeAllowsSave()){
-        localStorage.removeItem("gauntletRoom");
+        localStorage.removeItem("equilibriumCrisisRoom");
     }
 }
 
@@ -3515,12 +3516,6 @@ function inferObjective(question){
     const q = (question.q || "").toLowerCase();
     const tag = (question.tag || "general").toLowerCase();
     const type = (question.type || "default").toLowerCase();
-
-// =============================================
-// MARKET GATE OBJECTIVE INFERENCE
-// Chapters 19–22: Risk, Information Asymmetry,
-// Moral Hazard, Incentives, Organizational Design
-// =============================================
 
 // =============================================
     // THE EQUILIBRIUM CRISIS OBJECTIVE INFERENCE
@@ -4701,7 +4696,7 @@ const artifacts = {
 
 function getRecoveryLine(stage){
   if(stage === "repair"){
-    return "Recovery route opened. The Chancellor is isolating the broken market signal.";
+    return "Recovery route opened. The Custodian is isolating the broken market signal.";
   }
 
   if(stage === "bridge"){
@@ -5081,12 +5076,12 @@ if(!hasSavedRun){
     resetScoreAttackState();
 
     if(gameMode === "standard"){
-        localStorage.removeItem("gauntletRoom");
+        localStorage.removeItem("equilibriumCrisisRoom");
 	    localStorage.removeItem("vaultShard");
 	    localStorage.removeItem("vaultGauge");
-	    localStorage.removeItem("vaultSeal");
+	    localStorage.removeItem("equilibriumCrisisVaultSeal");
     } else if(gameMode === "legendary"){
-        localStorage.removeItem("gauntletRoom");
+        localStorage.removeItem("equilibriumCrisisRoom");
     }
 	if(modeAllowsRealmProgress()){
 	    localStorage.removeItem(REALM_COMPLETE_KEY);
@@ -5134,7 +5129,7 @@ if(localStorage.getItem("vaultGauge")){
     document.getElementById("vaultGauge").classList.add("unlocked");
 }    
 
-if(localStorage.getItem("vaultSeal")){
+    if(localStorage.getItem("equilibriumCrisisVaultSeal")){
     document.getElementById("vaultSeal").classList.add("unlocked");
 }
   
@@ -7362,9 +7357,9 @@ function updateMazeTrack() {
             box.innerText = "🟦";
         } else {
             // Boss icons for future rooms
-            if (i === 10){box.innerHTML = '<img src="breaker.webp" class="boss-icon">';box.classList.add("boss10");}
-            else if (i === 20){box.innerHTML = '<img src="warden.webp" class="boss-icon">';box.classList.add("boss20");}
-            else if (i === 30){box.innerHTML = '<img src="marshal.webp" class="boss-icon">';box.classList.add("boss30");}
+            if (i === 10){box.innerHTML = '<img src="breaker.webp" class="boss-icon" alt="" aria-hidden="true">';box.classList.add("boss10");}
+            else if (i === 20){box.innerHTML = '<img src="warden.webp" class="boss-icon" alt="" aria-hidden="true">';box.classList.add("boss20");}
+            else if (i === 30){box.innerHTML = '<img src="marshal.webp" class="boss-icon" alt="" aria-hidden="true">';box.classList.add("boss30");}
             else box.innerText = "🟨";
         }
         
@@ -7519,6 +7514,15 @@ document.addEventListener("click", function(event){
 });
 
 document.addEventListener("keydown", function(event){
+    const target = event.target;
+    const graphImg = target && target.matches ? target.matches("#questionImageBox img") : false;
+
+    if(graphImg && (event.key === "Enter" || event.key === " ")){
+        event.preventDefault();
+        openGraphLightbox(target.src, target.alt);
+        return;
+    }
+
     if(event.key === "Escape"){
         closeGraphLightbox();
     }
@@ -7653,7 +7657,7 @@ if (isBoss) {
     currentQuestion = shuffleOptions(bossPool[3 - bossHealth]);
 
     if (currentQuestion.image) {
-        imageBox.innerHTML = `<img src="${currentQuestion.image}" alt="Question graph" title="Click to enlarge"><div class="graph-zoom-note">Click graph to enlarge</div>`;
+        imageBox.innerHTML = `<img src="${currentQuestion.image}" alt="Question graph" title="Click to enlarge" role="button" tabindex="0" aria-label="Open expanded question graph"><div class="graph-zoom-note">Click graph to enlarge</div>`;
         imageBox.style.display = "block";
     } else {
         imageBox.innerHTML = "";
@@ -7690,11 +7694,11 @@ if (isBoss) {
     // =============================================
 
     if (room === 10) {
-        bossImage = "signal_breaker.webp";
+        bossImage = "breaker.webp";
         bossClass = "breakerGlow";
     }
     else if (room === 20) {
-        bossImage = "measure_warden.webp";
+        bossImage = "warden.webp";
         bossClass = "wardenGlow";
     }
     else {
@@ -7703,7 +7707,7 @@ if (isBoss) {
     }
 
     questionElement.innerHTML = `
-        <img src="${bossImage}" class="bossIcon ${bossClass}">
+        <img src="${bossImage}" class="bossIcon ${bossClass}" alt="${bTitle}">
         <span class="boss-title" style="color:${bColor}">${bTitle}</span>
         <div class="boss-q" style="--bossColor:${bColor}">
             ${currentQuestion.q}
@@ -7734,7 +7738,7 @@ if (isBoss) {
     );
 
     if(currentQuestion.image){
-        imageBox.innerHTML = `<img src="${currentQuestion.image}" alt="Question graph" title="Click to enlarge"><div class="graph-zoom-note">Click graph to enlarge</div>`;
+        imageBox.innerHTML = `<img src="${currentQuestion.image}" alt="Question graph" title="Click to enlarge" role="button" tabindex="0" aria-label="Open expanded question graph"><div class="graph-zoom-note">Click graph to enlarge</div>`;
         imageBox.style.display = "block";
     } else {
         imageBox.innerHTML = "";
@@ -7806,7 +7810,7 @@ else{
 }
 		
 if(currentQuestion.image){
-    imageBox.innerHTML = `<img src="${currentQuestion.image}" alt="Question graph" title="Click to enlarge"><div class="graph-zoom-note">Click graph to enlarge</div>`;
+    imageBox.innerHTML = `<img src="${currentQuestion.image}" alt="Question graph" title="Click to enlarge" role="button" tabindex="0" aria-label="Open expanded question graph"><div class="graph-zoom-note">Click graph to enlarge</div>`;
     imageBox.style.display = "block";
 }
 
@@ -8164,7 +8168,7 @@ recordAdaptiveAttempt(currentQuestion, isCorrect, responseTime);
         `<span class='fade-out-text'>${getRecoveryLine("complete")}</span>`;
 
     room = returnRoom;
-    localStorage.setItem("gauntletRoom", room);
+    localStorage.setItem("equilibriumCrisisRoom", room);
 
     setTimeout(loadQuestion, TIMING.normal);
     return;
@@ -8233,7 +8237,7 @@ if(modeAllowsRealmProgress()){
 
     if(room === 30){
         document.getElementById("vaultSeal").classList.add("unlocked");
-        localStorage.setItem("vaultSeal", "true");
+        localStorage.setItem("equilibriumCrisisVaultSeal", "true");
         showArtifact(artifacts.seal.img, artifacts.seal.title, artifacts.seal.text);
     }
 }
@@ -8252,7 +8256,7 @@ if(modeAllowsRealmProgress()){
    room++;
    timedHighestRoom = Math.max(timedHighestRoom, Math.min(room, 30));
    saveGameState();
-   localStorage.setItem("gauntletRoom", room);
+   localStorage.setItem("equilibriumCrisisRoom", room);
 
    if(gameMode === "timed" && timedModeEndTime && Date.now() >= timedModeEndTime){
        endTimedModeRun();
@@ -8381,7 +8385,7 @@ room = Math.max(bossCheckpoint, newRoom);
 
 if(gameMode === "timed") timedSetbacks++;
 
-localStorage.setItem("gauntletRoom", room);
+localStorage.setItem("equilibriumCrisisRoom", room);
 	
 showGameModal({
     title: "Wrong Turn",
@@ -8421,11 +8425,12 @@ showGameModal({
 // Safe to customize artifact visuals/text only
 function unlockArtifact(key) {
     const id = "vault" + key.charAt(0).toUpperCase() + key.slice(1);
+    const storageId = id === "vaultSeal" ? "equilibriumCrisisVaultSeal" : id;
     const slot = document.getElementById(id);
 
     if(slot){
         slot.classList.add("unlocked");
-        localStorage.setItem(id, "true");
+        localStorage.setItem(storageId, "true");
         updateMissionArtifactCountFromVault();
     }
 
@@ -8449,15 +8454,15 @@ function handleStreakVisuals() {
     let streakColor = "#f0c86a";
 
     if (streak === 5) {
-        streakMsg = `<span class="streak"><img src="streakspark.webp" class="streak-icon">STABILITY SPARK IGNITED</span>`;
+        streakMsg = `<span class="streak"><img src="streakspark.webp" class="streak-icon" alt="" aria-hidden="true">STABILITY SPARK IGNITED</span>`;
         streakColor = "#f0c86a";
     }
     else if (streak === 10) {
-        streakMsg = `<span class="streak"><img src="streakmark.webp" class="streak-icon">CALIBRATION MARK CLAIMED</span>`;
+        streakMsg = `<span class="streak"><img src="streakmark.webp" class="streak-icon" alt="" aria-hidden="true">CALIBRATION MARK CLAIMED</span>`;
         streakColor = "#38bdf8";
     }
     else if (streak === 20) {
-        streakMsg = `<span class="streak"><img src="streaksigil.webp" class="streak-icon">RECOVERY SIGIL SEALED</span>`;
+        streakMsg = `<span class="streak"><img src="streaksigil.webp" class="streak-icon" alt="" aria-hidden="true">RECOVERY SIGIL SEALED</span>`;
         streakColor = "#f5e6b8";
     }
 
@@ -8525,6 +8530,7 @@ function showArtifact(img,title,text){
     let p = document.getElementById("artifactText");
 
     image.src = img;
+    image.alt = title;
     t.innerText = title;
     p.innerText = text;
 
@@ -9609,14 +9615,14 @@ function shuffleArray(arr){
 // Clearing browser data will erase scores.
 // =============================================
 function updateHighScores(newTimeMs) {
-    let scores = JSON.parse(localStorage.getItem("gauntletHighScores")) || [];
+    let scores = JSON.parse(localStorage.getItem("equilibriumCrisisHighScores")) || [];
     scores.push({ name: username, time: newTimeMs, date: new Date().toLocaleDateString() });
     
     // Sort by time (lowest/fastest first) and keep top 5
     scores.sort((a, b) => a.time - b.time);
     scores = scores.slice(0, 5);
     
-    localStorage.setItem("gauntletHighScores", JSON.stringify(scores));
+    localStorage.setItem("equilibriumCrisisHighScores", JSON.stringify(scores));
     return scores;
 }
 
@@ -9674,7 +9680,7 @@ Accuracy: ${accuracy}%
 Best Streak: ${maxStreak}
 Total Questions: ${totalAttempts}
 Code: ${code}
-Verified by The Chancellor`;
+Verified by The Custodian`;
 
     navigator.clipboard.writeText(shareText).then(() => {
         const btn = document.getElementById("shareBtn");
@@ -9752,8 +9758,6 @@ function sendGameData(data) {
 </script>
 </body>
 </html>
-
-
 
 
 
