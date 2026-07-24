@@ -1713,11 +1713,12 @@ Every pixel matters.
     display: block;
   }
 
-  #gameBox{
-    width: 100%;
-    padding: 8px;
-    margin: 0 auto;
-    box-sizing: border-box;
+    #gameBox{
+    width:100%; max-width:100%; margin:0 auto; padding:12px 10px; box-sizing:border-box;
+    text-align:center; border-radius:12px; backdrop-filter:blur(6px);
+    background:radial-gradient(circle at center,rgba(139,92,246,.14) 0%,rgba(15,23,42,.60) 46%,rgba(20,12,42,.94) 74%,rgba(2,6,23,.99) 100%);
+    border:1px solid rgba(167,139,250,.36);
+    box-shadow:0 0 18px rgba(139,92,246,.20),0 0 42px rgba(56,189,248,.11),0 0 54px rgba(15,23,42,.72),inset 0 0 30px rgba(0,0,0,.78);
   }
 
   #autosave{
@@ -5388,6 +5389,10 @@ function endTimedModeRun(){
     const accuracy = totalAttempts > 0
         ? Math.round((correctAnswers / totalAttempts) * 100)
         : 0;
+    const totalTimeMs = freezeCompletionTime(timedModeDurationMs);
+    const timeString = formatTime(totalTimeMs);
+    const verificationCode = generateCode(username + "|TIMED", accuracy, maxStreak, totalTimeMs);
+
 
     const bestRoom = Number(localStorage.getItem("equilibriumCrisisTimedBestRoom") || 0);
     if(timedHighestRoom > bestRoom){
@@ -5421,7 +5426,8 @@ function endTimedModeRun(){
         totalTime: timedModeDurationMs,
         accuracy: accuracy / 100,
         maxStreak: maxStreak,
-        totalAttempts: totalAttempts
+        totalAttempts: totalAttempts,
+    verificationCode
     });
 
     document.getElementById("bossMessage").innerText = "";
@@ -5438,7 +5444,12 @@ function endTimedModeRun(){
             Accuracy: ${accuracy}%<br>
             Total Attempts: ${totalAttempts}<br>
             Best Streak: ${maxStreak}<br>
-            Setbacks Taken: ${timedSetbacks}
+            Setbacks Taken: ${timedSetbacks}<br>
+            Total Time: ${timeString}<br>
+            Run ID: <strong>${runID}</strong><br>
+            Verification Code: <strong>${verificationCode}</strong><br>
+            Run ID: <strong>${runID}</strong><br>
+            Verification Code: <strong>${verificationCode}</strong>
         </div>
     `;
 
@@ -5508,6 +5519,10 @@ function handlePracticeModeComplete(){
     const accuracy = totalAttempts > 0
         ? Math.round((correctAnswers / totalAttempts) * 100)
         : 0;
+    const totalTimeMs = freezeCompletionTime();
+    const timeString = formatTime(totalTimeMs);
+    const verificationCode = generateCode(username + "|" + String(gameMode).toUpperCase(), accuracy, maxStreak, totalTimeMs);
+
 
 	if(gameMode === "exam"){
  	   markExamDrillCompleted();
@@ -5532,7 +5547,8 @@ function handlePracticeModeComplete(){
         totalTime: startTime ? (Date.now() - startTime) : 0,
         accuracy: accuracy / 100,
         maxStreak: maxStreak,
-        totalAttempts: totalAttempts
+        totalAttempts: totalAttempts,
+    verificationCode
     });
 
     document.getElementById("bossMessage").innerText = "";
@@ -5545,7 +5561,10 @@ function handlePracticeModeComplete(){
             You reached the end of this practice path.<br><br>
             Accuracy: ${accuracy}%<br>
             Total Attempts: ${totalAttempts}<br>
-            Best Streak: ${maxStreak}
+            Best Streak: ${maxStreak}<br>
+            Total Time: ${timeString}<br>
+            Run ID: <strong>${runID}</strong><br>
+            Verification Code: <strong>${verificationCode}</strong>
         </div>
     `;
 
@@ -8062,7 +8081,7 @@ if(rapidGuess.triggered && !rapidGuessLocked){
     sendGameData({
         runID: runID,
         game: "The Equilibrium Crisis",
-        event: "rapid_guessing",
+        event: "question",
         user: username || "anonymous",
         room: room,
         questionId: currentQuestion.id || 0,
@@ -8913,6 +8932,8 @@ function handleLegendaryVictory(){
             Total Attempts: ${totalAttempts}<br>
             Best Streak: ${maxStreak}<br>
             Total Time: ${timeString}<br>
+            Run ID: <strong>${runID}</strong><br>
+            Verification Code: <strong>${verificationCode}</strong><br>
             Verification Code: <strong>${verificationCode}</strong>
         </div>
     `;
@@ -8941,6 +8962,7 @@ function handleScoreAttackVictory(){
         ? Math.round((correctAnswers / totalAttempts) * 100)
         : 0;
 
+    const verificationCode = generateCode(username + "|SCORE", accuracy, maxStreak, totalTimeMs);
     storeScoreAttackFinalStats(accuracy, totalTimeMs);
 
     sendGameData({
@@ -8965,7 +8987,8 @@ function handleScoreAttackVictory(){
         totalAttempts: totalAttempts,
         score: scoreAttackScore,
         bestScore: scoreAttackBestScore,
-        scoreEvents: JSON.stringify(scoreAttackEvents)
+        scoreEvents: JSON.stringify(scoreAttackEvents),
+    verificationCode
     });
 
     let scoreLine = "Respectable. The Crisis noticed.";
@@ -8992,7 +9015,9 @@ function handleScoreAttackVictory(){
             Accuracy: ${accuracy}%<br>
             Total Attempts: ${totalAttempts}<br>
             Best Streak: ${maxStreak}<br>
-            Total Time: ${timeString}
+            Total Time: ${timeString}<br>
+            Run ID: <strong>${runID}</strong><br>
+            Verification Code: <strong>${verificationCode}</strong>
         </div>
     `;
 
@@ -9615,6 +9640,7 @@ function restoreResultsScreen(){
 
 function copyMasteryReport(){
     const report = getMasteryReportData();
+    const recommendedReview = getRecommendedResources(getWeakLearningObjectiveIds(report));
 
     const lines = [
         "The Equilibrium Crisis — Custodian's Mastery Report",
@@ -9636,6 +9662,9 @@ function copyMasteryReport(){
         "",
         report.hasSkillWeakness ? "Weakest Skills:" : "Skill Signals:",
         ...(report.hasSkillWeakness && report.weakestSkills.length ? report.weakestSkills.map(item => `- ${item.label}: ${formatPercent(item.accuracy)} (${item.correct}/${item.attempts})`) : ["- No major skill weakness detected."]),
+        "",
+        "Recommended Review:",
+        ...(recommendedReview.length ? recommendedReview.map(resource => `- ${resource.title} [${INSTRUCTIONAL_RESOURCE_TYPE_LABELS[resource.type] || "Course Material"}] ${resource.url}`) : ["- No recommended review materials for this mastery profile."]),
         "",
         "Next Moves:",
         ...report.nextSteps.map(step => `- ${step}`)
