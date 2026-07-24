@@ -2524,7 +2524,6 @@ Respect structure strictly.
 <div id="startScreen">
   <div class="start-content">
     <h1 class="title">THE EQUILIBRIUM CRISIS</h1>
-    <p class="start-note">An anonymous local alias is created for each run.</p>
     <button class="start-btn" onclick="showModeSelect()">ENTER THE CRISIS</button>
 	<button id="continueRunBtn" class="start-btn secondary-start-btn" onclick="continueSavedRun()" style="display:none;">
     CONTINUE STANDARD RUN</button>
@@ -2873,6 +2872,9 @@ let runID = "";
 let questionStartTime = 0;
 let streak = 0; 
 let startTime; // Will be set in startGame()
+let finalElapsedTimeMs = null;
+function getElapsedTimeMs(){ return Number.isFinite(finalElapsedTimeMs) ? finalElapsedTimeMs : (startTime ? (Date.now() - startTime) : 0); }
+function freezeCompletionTime(fallbackMs = 0){ if(!Number.isFinite(finalElapsedTimeMs)) finalElapsedTimeMs = startTime ? (Date.now() - startTime) : fallbackMs; return finalElapsedTimeMs; }
 let room = localStorage.getItem("equilibriumCrisisRoom") ? parseInt(localStorage.getItem("equilibriumCrisisRoom")) : 1;
 let currentQuestion = null;
 let detourActive = false;
@@ -5139,6 +5141,7 @@ if(hasSavedRun){
 }
 
 if(!hasSavedRun){
+    finalElapsedTimeMs = null;
     bossCheckpoint = 1;
     runID = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
 }
@@ -8066,7 +8069,11 @@ if(rapidGuess.triggered && !rapidGuessLocked){
         selectedIndex: choice,
         selectedAnswer: currentQuestion.options?.[choice] ?? "",
         correctIndex: currentQuestion.a,
-        correct: isCorrect ? 1 : 0,
+        answerKeyMatch: isCorrect ? 1 : 0,
+
+        correct: 0,
+
+        rapidGuessing: 1,
         tag: currentQuestion.tag || "none",
         type: currentQuestion.type || "none",
         objective: currentQuestion.objective || inferObjective(currentQuestion),
@@ -8133,7 +8140,11 @@ recordAdaptiveAttempt(currentQuestion, isCorrect, responseTime);
         selectedIndex: choice,
         selectedAnswer: currentQuestion.options?.[choice] ?? "",
         correctIndex: currentQuestion.a,
+        answerKeyMatch: isCorrect ? 1 : 0,
+
         correct: isCorrect ? 1 : 0,
+
+        rapidGuessing: 0,
         tag: currentQuestion.tag || "none",
         type: currentQuestion.type || "none",
         objective: currentQuestion.objective || inferObjective(currentQuestion),
@@ -8855,7 +8866,7 @@ function handleLegendaryVictory(){
         sfxVictory.play();
     }
 
-    const totalTimeMs = Date.now() - startTime;
+    const totalTimeMs = freezeCompletionTime();
     const timeString = formatTime(totalTimeMs);
     const accuracy = totalAttempts > 0 ? Math.round((correctAnswers / totalAttempts) * 100) : 0;
     const verificationCode = generateCode(username + "|LEGENDARY", accuracy, maxStreak, totalTimeMs);
@@ -8924,7 +8935,7 @@ function handleLegendaryVictory(){
 function handleScoreAttackVictory(){
     stopTimedModeClock();
 
-    const totalTimeMs = startTime ? (Date.now() - startTime) : 0;
+    const totalTimeMs = freezeCompletionTime();
     const timeString = formatTime(totalTimeMs);
     const accuracy = totalAttempts > 0
         ? Math.round((correctAnswers / totalAttempts) * 100)
@@ -9029,7 +9040,7 @@ function handleVictory() {
         sfxVictory.play();
     }
     
-    const totalTimeMs = Date.now() - startTime;
+    const totalTimeMs = freezeCompletionTime();
     const timeString = formatTime(totalTimeMs);
     const accuracy = Math.round((correctAnswers / totalAttempts) * 100);
     const verificationCode = generateCode(username, accuracy, maxStreak, totalTimeMs);
@@ -9395,7 +9406,7 @@ function getMasteryReportModeName(){
 const INSTRUCTIONAL_RESOURCE_TYPE_LABELS={video:"Lecture Video","worked-problem":"Worked-Problems Video",slides:"Lecture Slides",other:"Course Material"};
 function getInstructionalResourceConfig(){const c=window.EQUILIBRIUM_CRISIS_INSTRUCTIONAL_RESOURCES;return c?.chapters&&c?.objectives?c:null}function normalizeLearningObjectiveId(v){const s=String(v||"").trim(),m=s.match(/^(?:LO\s*)?(\d+)\s*[._\-\s]\s*(\d+)(?:[_\-\s].*)?$/i);if(!m||/(?:LO\d+\.\d+).*?(?:LO\d+\.\d+)/i.test(s))return null;const id=`LO${Number(m[1])}.${Number(m[2])}`;return getInstructionalResourceConfig()?.objectives?.[id]?id:null}function getChapterFromLearningObjective(v){const id=normalizeLearningObjectiveId(v);return id?id.match(/^LO(\d+)\./)[1]:null}function isSafeInstructionalResourceUrl(v){if(typeof v!=="string"||!v.trim())return false;const u=v.trim();if(/^https:\/\//i.test(u)){try{return new URL(u).protocol==="https:"}catch(e){return false}}return /^\.\.\/(?:The Market Gate|The National Ledger)\/resources\/(?:[^\\/:?#]+\/)*[^\\/:?#]+\.(?:ppt|pptx|pdf)$/i.test(u)&&!/(?:^|\/)\.\.(?:\/|$)/.test(u.replace(/^\.\.\//,""))}function mapFor(c,id){return c?.objectives?.[id]||null}function resourceById(c,id){for(const ch of Object.values(c?.chapters||{}))for(const r of ch.resources||[])if(r?.id===id&&isSafeInstructionalResourceUrl(r.url))return r;return null}function getRecommendedResources(raw){const c=getInstructionalResourceConfig();if(!c||!Array.isArray(raw))return[];const max=3,out=new Map(),add=r=>{if(r?.id&&!out.has(r.id)&&isSafeInstructionalResourceUrl(r.url))out.set(r.id,r)};raw.forEach(x=>{if(out.size>=max)return;const id=normalizeLearningObjectiveId(x);if(!id)return;(mapFor(c,id)?.resourceIds||[]).map(y=>resourceById(c,y)).filter(Boolean).forEach(add);if(out.size>=max)return;const ch=c.chapters[getChapterFromLearningObjective(id)];(ch?.fallbackResourceIds||[]).map(y=>resourceById(c,y)).filter(Boolean).forEach(add)});return[...out.values()].slice(0,max)}function getWeakLearningObjectiveIds(r){return r?.hasObjectiveWeakness?(r.weakestObjectives||[]).map(x=>x.key).filter(x=>normalizeLearningObjectiveId(x)):[]}function objectiveTitle(id){const n=normalizeLearningObjectiveId(id);return n?mapFor(getInstructionalResourceConfig(),n)?.title||n:formatMasteryLabel(id)}function label(r){return r.type==="slides"?"Open Slides":"Watch Video"}function cards(rs){return rs.map(r=>`<article class="resource-card"><div class="resource-card-header"><h4 class="resource-card-title">${escapeHTML(r.title)}</h4><span class="resource-card-type">${escapeHTML(INSTRUCTIONAL_RESOURCE_TYPE_LABELS[r.type]||"Course Material")}</span></div><p class="resource-card-description">${escapeHTML(r.description||"")}</p><a class="resource-card-link" href="${escapeHTML(r.url)}" target="_blank" rel="noopener noreferrer">${label(r)}</a></article>`).join("")}function renderInstructionalResourceSection(r){const weak=getWeakLearningObjectiveIds(r);if(!weak.length)return"";const rs=getRecommendedResources(weak),intro="Based on the weakest learning objectives in this run, start with these materials before your next attempt.";return `<div class="mastery-section resource-recommendation-section"><h3>Recommended Review</h3><p class="resource-recommendation-intro">${intro}</p>${rs.length?`<div class="resource-recommendation-list">${cards(rs)}</div>`:'<p class="mastery-empty">No review material is available for these objectives yet.</p>'}<div class="mastery-actions"><button class="continue-btn" onclick="openInstructionalReviewScreen()">Review Materials</button></div></div>`}function domCard(r){const a=document.createElement("article"),h=document.createElement("div"),t=document.createElement("h3"),k=document.createElement("span"),d=document.createElement("p"),l=document.createElement("a");a.className="resource-card";h.className="resource-card-header";t.className="resource-card-title";t.textContent=r.title;k.className="resource-card-type";k.textContent=INSTRUCTIONAL_RESOURCE_TYPE_LABELS[r.type]||"Course Material";h.append(t,k);d.className="resource-card-description";d.textContent=r.description||"";l.className="resource-card-link";l.href=r.url;l.target="_blank";l.rel="noopener noreferrer";l.textContent=label(r);a.append(h,d,l);return a}function openInstructionalReviewScreen(){const box=document.getElementById("gameBox"),r=getMasteryReportData(),weak=getWeakLearningObjectiveIds(r),rs=getRecommendedResources(weak),s=document.createElement("section"),title=document.createElement("h1"),sub=document.createElement("p"),os=document.createElement("div"),ol=document.createElement("ul"),ms=document.createElement("div"),list=document.createElement("div"),actions=document.createElement("div");s.className="mastery-report-screen review-materials-screen";title.className="mastery-report-title";title.tabIndex=-1;title.textContent="REVIEW BEFORE YOUR NEXT ATTEMPT";sub.className="mastery-report-subtitle";sub.textContent="Use these materials to reinforce the concepts that showed the weakest signal in this run.";os.className="mastery-section";const oh=document.createElement("h2");oh.textContent="Learning Objectives to Review";ol.className="review-objective-list";weak.forEach(id=>{const li=document.createElement("li");li.textContent=`${id}: ${objectiveTitle(id)}`;ol.append(li)});os.append(oh,ol);ms.className="mastery-section";const mh=document.createElement("h2"),intro=document.createElement("p");mh.textContent="Recommended Materials";intro.className="resource-recommendation-intro";intro.textContent="Based on the weakest learning objectives in this run, start with these materials before your next attempt.";list.className="resource-recommendation-list";rs.forEach(x=>list.append(domCard(x)));ms.append(mh,intro,list);actions.className="mastery-actions";[["Return to Mastery Report",()=>showMasteryReportScreen(true)],["Replay Mission",()=>location.reload()],["Choose Another Crisis Run",()=>returnToModeSelectFromRun()]].forEach(([x,f])=>{const b=document.createElement("button");b.className="continue-btn";b.textContent=x;b.addEventListener("click",f);actions.append(b)});s.append(title,sub,os,ms,actions);box.replaceChildren(s);title.focus()}
 function getMasteryReportData(){
-    const totalTimeMs = startTime ? (Date.now() - startTime) : 0;
+    const totalTimeMs = freezeCompletionTime();
     const accuracy = totalAttempts > 0 ? correctAnswers / totalAttempts : 0;
     const tagEntries = getEntriesFromBuckets(masteryState.byTag || {}, "tag");
     const objectiveEntries = getEntriesFromBuckets(masteryState.byObjective || {}, "objective");
@@ -9751,7 +9762,7 @@ function formatTime(ms) {
 // Removing those will break this function.
 // =============================================     
 function copyResults() {
-    const totalTimeMs = Date.now() - startTime;
+    const totalTimeMs = freezeCompletionTime();
     const timeString = formatTime(totalTimeMs);
     const code = document.getElementById("vCode").innerText;
     const accuracy = Math.round((correctAnswers / totalAttempts) * 100);
@@ -9781,8 +9792,8 @@ Verified by The Custodian`;
 }
 
 const TELEMETRY_PREFIX = "equilibriumCrisisTelemetry_";
-const TELEMETRY_VERSION = "Crisis-local-telemetry-v2";
-const GAME_VERSION = "Equilibrium-Crisis-2026.07.23.1";
+const TELEMETRY_VERSION = "Crisis-local-telemetry-v3";
+const GAME_VERSION = "Equilibrium-Crisis-2026.07.23.2";
 
 const TELEMETRY_COLUMNS = [
     "eventID",
@@ -9800,7 +9811,9 @@ const TELEMETRY_COLUMNS = [
     "selectedIndex",
     "selectedAnswer",
     "correctIndex",
+    "answerKeyMatch",
     "correct",
+    "rapidGuessing",
     "tag",
     "type",
     "objective",
@@ -9863,6 +9876,10 @@ function sendGameData(data = {}){
                 ? currentQuestion.options[selectedIndex] ?? ""
                 : "");
 
+        const eventName = data.event || "";
+        const isResponseEvent = eventName === "question" || eventName === "rapid_guessing";
+        const isCompletionEvent = /(?:^|_)complete$/.test(eventName);
+
         const priorExposureCount = questionID > 0
             ? records.filter(item =>
                 Number(item.questionID) === questionID
@@ -9878,7 +9895,7 @@ function sendGameData(data = {}){
             runID: activeRunID,
             game: data.game || "The Equilibrium Crisis",
             mode: normalizedMode,
-            event: data.event || "",
+            event: eventName,
             room: Number(data.room ?? room ?? 0),
             questionID,
             questionVersion: Number(data.questionVersion ?? currentQuestion?.version ?? 1),
@@ -9886,14 +9903,16 @@ function sendGameData(data = {}){
             selectedIndex,
             selectedAnswer: String(selectedAnswer ?? ""),
             correctIndex: Number(data.correctIndex ?? -1),
-            correct: Number(data.correct ?? 0),
+            answerKeyMatch: isResponseEvent ? Number(data.answerKeyMatch ?? data.correct ?? 0) : 0,
+            correct: isResponseEvent ? Number(data.correct ?? 0) : 0,
+            rapidGuessing: isResponseEvent ? Number(data.rapidGuessing ?? (eventName === "rapid_guessing" ? 1 : 0)) : 0,
             tag: data.tag || "",
             type: data.type || "",
             objective: data.objective || "",
             responseTimeMs: Number(data.responseTime ?? data.responseTimeMs ?? 0),
             attempt: Number(data.attempt ?? 0),
             streak: Number(data.streak ?? 0),
-            elapsedTimeMs: Number(data.elapsedTime ?? data.elapsedTimeMs ?? 0),
+            elapsedTimeMs: isCompletionEvent ? Number(data.totalTime ?? data.totalTimeMs ?? 0) : Number(data.elapsedTime ?? data.elapsedTimeMs ?? 0),
             adaptiveMode: data.adaptiveMode || adaptiveMode || "",
             remediationStage: data.remediationStage || (remediationState?.active ? remediationState.stage || "" : ""),
             priorExposureCount,
