@@ -219,18 +219,18 @@ body::after{
 
 #gameBox {
     max-width: 750px;
-    flex:1;
-    min-width:0;
-    width:100%;
+    flex: 1;
+    min-width: 0;
+    width: 100%;
     margin: 0;
     padding: 18px 20px;
     text-align: center;
 
     background:
         radial-gradient(circle at center,
-            rgba(139,92,246,0.14) 0%,
-            rgba(15,23,42,0.60) 46%,
-            rgba(20,12,42,0.94) 74%,
+            rgba(56,189,248,0.16) 0%,
+            rgba(15,42,64,0.70) 46%,
+            rgba(4,14,28,0.94) 74%,
             rgba(2,6,23,0.99) 100%);
 
     backdrop-filter: blur(6px);
@@ -238,12 +238,12 @@ body::after{
     box-sizing: border-box;
 
     box-shadow:
-        0 0 22px rgba(139,92,246,0.20),
-        0 0 58px rgba(56,189,248,0.11),
-        0 0 72px rgba(15,23,42,0.72),
+        0 0 22px rgba(56,189,248,0.20),
+        0 0 58px rgba(247,217,130,0.10),
+        0 0 72px rgba(15,42,64,0.72),
         inset 0 0 42px rgba(0,0,0,0.78);
 
-    border: 1px solid rgba(167,139,250,0.36);
+    border: 1px solid rgba(247,217,130,0.34);
     animation: torchFlicker 6s infinite;
     transition: box-shadow .3s ease, border-color .3s ease;
     position: relative;
@@ -1713,13 +1713,16 @@ Every pixel matters.
     display: block;
   }
 
-    #gameBox{
-    width:100%; max-width:100%; margin:0 auto; padding:12px 10px; box-sizing:border-box;
-    text-align:center; border-radius:12px; backdrop-filter:blur(6px);
-    background:radial-gradient(circle at center,rgba(139,92,246,.14) 0%,rgba(15,23,42,.60) 46%,rgba(20,12,42,.94) 74%,rgba(2,6,23,.99) 100%);
-    border:1px solid rgba(167,139,250,.36);
-    box-shadow:0 0 18px rgba(139,92,246,.20),0 0 42px rgba(56,189,248,.11),0 0 54px rgba(15,23,42,.72),inset 0 0 30px rgba(0,0,0,.78);
-  }
+#gameBox {
+    width: 100%;
+    max-width: 100%;
+    margin: 0 auto;
+    padding: 12px 10px;
+    box-sizing: border-box;
+    text-align: center;
+    border-radius: 12px;
+    backdrop-filter: blur(6px);
+}
 
   #autosave{
     position: static;
