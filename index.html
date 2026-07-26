@@ -1,5 +1,5 @@
 <!-- =====================================================
-GAUNTLET ENGINE — MASTER TEMPLATE
+GAUNTLET ENGINE — MASTER TEMPLATE - Patch 07/25
 
 READ BEFORE EDITING:
 
@@ -219,18 +219,18 @@ body::after{
 
 #gameBox {
     max-width: 750px;
-    flex: 1;
-    min-width: 0;
-    width: 100%;
+    flex:1;
+    min-width:0;
+    width:100%;
     margin: 0;
     padding: 18px 20px;
     text-align: center;
 
     background:
         radial-gradient(circle at center,
-            rgba(56,189,248,0.16) 0%,
-            rgba(15,42,64,0.70) 46%,
-            rgba(4,14,28,0.94) 74%,
+            rgba(139,92,246,0.14) 0%,
+            rgba(15,23,42,0.60) 46%,
+            rgba(20,12,42,0.94) 74%,
             rgba(2,6,23,0.99) 100%);
 
     backdrop-filter: blur(6px);
@@ -238,12 +238,12 @@ body::after{
     box-sizing: border-box;
 
     box-shadow:
-        0 0 22px rgba(56,189,248,0.20),
-        0 0 58px rgba(247,217,130,0.10),
-        0 0 72px rgba(15,42,64,0.72),
+        0 0 22px rgba(139,92,246,0.20),
+        0 0 58px rgba(56,189,248,0.11),
+        0 0 72px rgba(15,23,42,0.72),
         inset 0 0 42px rgba(0,0,0,0.78);
 
-    border: 1px solid rgba(247,217,130,0.34);
+    border: 1px solid rgba(167,139,250,0.36);
     animation: torchFlicker 6s infinite;
     transition: box-shadow .3s ease, border-color .3s ease;
     position: relative;
@@ -1713,16 +1713,13 @@ Every pixel matters.
     display: block;
   }
 
-#gameBox {
-    width: 100%;
-    max-width: 100%;
-    margin: 0 auto;
-    padding: 12px 10px;
-    box-sizing: border-box;
-    text-align: center;
-    border-radius: 12px;
-    backdrop-filter: blur(6px);
-}
+    #gameBox{
+    width:100%; max-width:100%; margin:0 auto; padding:12px 10px; box-sizing:border-box;
+    text-align:center; border-radius:12px; backdrop-filter:blur(6px);
+    background:radial-gradient(circle at center,rgba(139,92,246,.14) 0%,rgba(15,23,42,.60) 46%,rgba(20,12,42,.94) 74%,rgba(2,6,23,.99) 100%);
+    border:1px solid rgba(167,139,250,.36);
+    box-shadow:0 0 18px rgba(139,92,246,.20),0 0 42px rgba(56,189,248,.11),0 0 54px rgba(15,23,42,.72),inset 0 0 30px rgba(0,0,0,.78);
+  }
 
   #autosave{
     position: static;
@@ -2959,6 +2956,7 @@ const REALM_PERFECT_CALIBRATION_KEY = "economicRealm_perfectCalibration";
 const REALM_RETURN_AND_REBUILD_KEY = "economicRealm_returnAndRebuild";
 
 let gameMode = "standard";
+let runSessionId = 0;
 let timedModeDurationMs = 10 * 60 * 1000;
 let timedModeEndTime = null;
 let timedModeTimerInterval = null;
@@ -3114,6 +3112,18 @@ function checkReturnAndRebuildAchievement(){
 
 function modeAllowsSave(){ return gameMode === "standard" || gameMode === "legendary"; }
 function modeAllowsRealmProgress(){ return gameMode === "standard"; }
+function beginRunSession(){
+    runSessionId += 1;
+    return runSessionId;
+}
+
+function scheduleForCurrentRun(callback, delay){
+    const scheduledSessionId = runSessionId;
+    return setTimeout(() => {
+        if(scheduledSessionId !== runSessionId) return;
+        callback();
+    }, delay);
+}
 function getSaveKey(){ return `${SAVE_KEY}_${gameMode || "standard"}`; }
 function isBossRoomForMode(r){ if(gameMode === "exam" || gameMode === "timed") return false; return r === 10 || r === 20 || r === 30; }
 function getModeDisplayName(){
@@ -5239,7 +5249,7 @@ if(!hasSavedRun){
 	document.querySelector(".top-panel").style.display = "flex";
     document.getElementById("gameShell").style.display = "flex";
     document.getElementById("gameBox").style.display = "block";
-    document.getElementById("artifactVault").style.display = "block";
+    document.getElementById("artifactVault").style.display = modeAllowsRealmProgress() ? "block" : "none";
     document.querySelectorAll(".torch").forEach(t => t.style.display = "block");
 
 
@@ -5478,8 +5488,12 @@ function restartTimedMode(){
 }
 
 function returnToModeSelectFromRun(){
+    beginRunSession();
     stopTimedModeClock();
     stopAllMusic();
+
+    const hallway = document.getElementById("hallwayTransition");
+    if(hallway) hallway.classList.remove("active");
     updateScoreAttackHud();
 
     setGameControlsVisible(false);
@@ -6657,12 +6671,13 @@ function checkRapidGuessing(isCorrect, responseTime){
 // Check for artifact names and CHANGE
      
 async function answer(choice) {
+    const answerSessionId = runSessionId;
     if(answerSubmissionPending || rapidGuessLocked) return;
     answerSubmissionPending = true;
     setAnswerButtonsDisabled(true);
     const responseTime = Date.now() - questionStartTime;
     let isCorrect = false;
-    try { isCorrect = await isQuestionAnswerCorrect(currentQuestion, choice); } catch(error) { console.error("Answer verification failed:", error); answerSubmissionPending = false; setAnswerButtonsDisabled(false); showGameModal({ title: "Answer Check Failed", text: "The Equilibrium Crisis could not verify this answer. Reload the game files and try again.", confirmText: "Continue" }); return; }
+    try { isCorrect = await isQuestionAnswerCorrect(currentQuestion, choice); if(answerSessionId !== runSessionId) return; } catch(error) { if(answerSessionId !== runSessionId) return; console.error("Answer verification failed:", error); answerSubmissionPending = false; setAnswerButtonsDisabled(false); showGameModal({ title: "Answer Check Failed", text: "The Equilibrium Crisis could not verify this answer. Reload the game files and try again.", confirmText: "Continue" }); return; }
 
     // --- GLOBAL MEMORY DECAY ---
     for(let tag in conceptMemory){
@@ -6790,6 +6805,7 @@ recordAdaptiveAttempt(currentQuestion, isCorrect, responseTime);
     if(modeUsesScoreAttack()){
         setAnswerButtonsDisabled(true);
         await waitForScoreAttackResolve(isCorrect);
+        if(answerSessionId !== runSessionId) return;
     }
 
     // =============================================
@@ -6883,7 +6899,7 @@ recordAdaptiveAttempt(currentQuestion, isCorrect, responseTime);
     room = returnRoom;
     localStorage.setItem("equilibriumCrisisRoom", room);
 
-    setTimeout(loadQuestion, TIMING.normal);
+    scheduleForCurrentRun(loadQuestion, TIMING.normal);
     return;
 }
 
@@ -6917,7 +6933,7 @@ recordAdaptiveAttempt(currentQuestion, isCorrect, responseTime);
 		triggerBossShake();
         
         if (bossHealth > 0) {
-           setTimeout(loadQuestion, TIMING.boss);
+           scheduleForCurrentRun(loadQuestion, TIMING.boss);
            return;
         }
 			
@@ -7227,7 +7243,7 @@ text.innerHTML = `
 
     document.getElementById("srAnnouncements").innerText =`Correct. ${feedback}`;
     
-    setTimeout(()=>{
+    scheduleForCurrentRun(()=>{
     overlay.classList.remove("active");
     loadQuestion();
     },3200);
