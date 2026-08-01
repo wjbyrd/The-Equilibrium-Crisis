@@ -1,5 +1,5 @@
 <!-- =====================================================
-GAUNTLET ENGINE — MASTER TEMPLATE - Patch 07/25
+GAUNTLET ENGINE — MASTER TEMPLATE - Patch 08/01
 
 READ BEFORE EDITING:
 
@@ -2848,6 +2848,52 @@ if (!isFullscreen) {
 // 1. Initial UI State: Hide game until startGame runs
 // =============================================
 document.getElementById("gameBox").style.display = "none";
+
+const EQUILIBRIUM_CRISIS_GAMEPLAY_TEMPLATE = document.getElementById("gameBox").innerHTML;
+
+function restoreEquilibriumCrisisGameplayShell(){
+    const gameBox = document.getElementById("gameBox");
+    if(!gameBox) return false;
+
+    const requiredGameplayIds = [
+        "autosave",
+        "areaDisplay",
+        "progressBar",
+        "progressFill",
+        "scoreAttackHud",
+        "scoreAttackDisplay",
+        "scoreAttackBestDisplay",
+        "scoreFloatLayer",
+        "streakDisplay",
+        "timedModeHud",
+        "timerDisplay",
+        "bossMessage",
+        "questionContainer",
+        "questionImageBox",
+        "question",
+        "message",
+        "formulaHint",
+        "answers",
+        "artifactDrop",
+        "artifactImage",
+        "artifactTitle",
+        "artifactText"
+    ];
+
+    const gameplayShellIsIntact = requiredGameplayIds.every(id => document.getElementById(id));
+    if(gameplayShellIsIntact) return false;
+
+    gameBox.innerHTML = EQUILIBRIUM_CRISIS_GAMEPLAY_TEMPLATE;
+    gameBox.classList.remove("boss-mode");
+    gameBox.style.removeProperty("--bossColor");
+
+    const gameShell = document.getElementById("gameShell");
+    if(gameShell){
+        gameShell.classList.remove("boss-mode");
+    }
+
+    return true;
+}
 document.querySelectorAll(".torch").forEach(t => t.style.display = "none");
 
 // =============================================
@@ -5266,6 +5312,8 @@ showContinueButtonIfSaved();
 // - progression bugs
 // =============================================
 function startGame(shouldResume = false) {
+    restoreEquilibriumCrisisGameplayShell();
+
     const hasSavedRun = shouldResume && modeAllowsSave() ? loadSavedGame() : false;
 if(hasSavedRun){
     resumedSavedRunThisSession = true;
