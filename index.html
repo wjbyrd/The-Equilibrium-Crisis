@@ -1,5 +1,7 @@
 <!-- =====================================================
-GAUNTLET ENGINE — MASTER TEMPLATE - Patch 08/01
+THE EQUILIBRIUM CRISIS MASTER TEMPLATE 
+
+Last update: 08/03/2026
 
 READ BEFORE EDITING:
 
@@ -2450,10 +2452,51 @@ body.game-active #soundToggle {
 
 /* 16. INSTRUCTIONAL RESOURCE RECOMMENDATIONS */
 .resource-recommendation-section{margin-top:14px}.resource-recommendation-intro{color:#d5e9f7;line-height:1.55;margin:0 0 14px}.resource-recommendation-list{display:grid;grid-template-columns:1fr;gap:12px}.resource-card{min-width:0;padding:16px;border:1px solid rgba(92,197,220,.48);border-radius:11px;background:linear-gradient(135deg,rgba(16,55,76,.92),rgba(5,13,25,.97));box-shadow:0 0 16px rgba(0,0,0,.4),inset 0 0 18px rgba(92,197,220,.08)}.resource-card-header{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}.resource-card-title{min-width:0;margin:0;color:#f5dc93;font-size:17px;font-weight:800;line-height:1.32;overflow-wrap:anywhere}.resource-card-type{flex:0 0 auto;max-width:100%;padding:4px 8px;border:1px solid rgba(92,197,220,.65);border-radius:999px;color:#d5f4ff;font-size:10px;font-weight:800;letter-spacing:.8px;line-height:1.2;text-transform:uppercase; white-space:nowrap; overflow-wrap:normal;}.resource-card-description{margin:10px 0 14px;color:rgba(231,244,251,.94);line-height:1.55;overflow-wrap:anywhere}.resource-card-link{display:inline-flex;align-items:center;justify-content:center;min-height:40px;max-width:100%;padding:9px 14px;border:1px solid rgba(245,220,147,.8);border-radius:8px;background:linear-gradient(180deg,#1c6985,#0c364f);color:#fff8d8;font-weight:800;text-align:center;text-decoration:none}.resource-card-link:hover{background:linear-gradient(180deg,#2a819b,#11506e);transform:translateY(-1px)}.resource-card-link:focus-visible{outline:3px solid #f5dc93;outline-offset:3px;box-shadow:0 0 0 5px rgba(92,197,220,.45)}.review-materials-screen .mastery-section h2{margin:0 0 12px;color:#f5dc93;font-size:18px}.review-objective-list{margin:0;padding-left:22px;color:#e7f4fb}.review-objective-list li{margin:7px 0;line-height:1.48}@media(max-width:420px){.resource-card{padding:14px}.resource-card-header{flex-direction:column;gap:8px}.resource-card-link{display:flex;width:100%;box-sizing:border-box}}
+/* =========================================
+   EQUILIBRIUM CRISIS PRODUCTION ALIGNMENT
+   Mobile containment validated in Phase 3.5
+========================================= */
+@media (max-width: 768px){
+  html,
+  body{
+    width:100%;
+    max-width:100%;
+    overflow-x:hidden;
+  }
+
+  #mazeTrack{
+    grid-template-columns:repeat(10, minmax(0, 1fr));
+    box-sizing:border-box;
+    max-width:100%;
+  }
+
+  .mastery-actions{
+    width:100%;
+    box-sizing:border-box;
+  }
+
+  .mastery-actions button{
+    flex:1 1 180px;
+    min-width:0;
+    max-width:100%;
+    box-sizing:border-box;
+    white-space:normal;
+    overflow-wrap:anywhere;
+  }
+
+  #graphLightbox{
+    max-width:100vw;
+    overflow:hidden;
+  }
+
+  #graphLightbox img{
+    width:min(100%, calc(100vw - 24px));
+    max-width:100%;
+    box-sizing:border-box;
+  }
+}
+
 </style>
-<script src="../The Market Gate/instructional_resources.js"></script>
-<script src="../The National Ledger/instructional_resources.js"></script>
-<script src="equilibrium_crisis_resources.js"></script>
 </head>
 
 <!-- =========================================
@@ -2881,18 +2924,24 @@ function restoreEquilibriumCrisisGameplayShell(){
     ];
 
     const gameplayShellIsIntact = requiredGameplayIds.every(id => document.getElementById(id));
-    if(gameplayShellIsIntact) return false;
+    if(!gameplayShellIsIntact){
+        gameBox.innerHTML = EQUILIBRIUM_CRISIS_GAMEPLAY_TEMPLATE;
+    }
 
-    gameBox.innerHTML = EQUILIBRIUM_CRISIS_GAMEPLAY_TEMPLATE;
     gameBox.classList.remove("boss-mode");
     gameBox.style.removeProperty("--bossColor");
 
     const gameShell = document.getElementById("gameShell");
     if(gameShell){
         gameShell.classList.remove("boss-mode");
+        gameShell.style.removeProperty("--bossColor");
     }
 
-    return true;
+    if(typeof closeGraphLightbox === "function"){
+        closeGraphLightbox();
+    }
+
+    return requiredGameplayIds.every(id => document.getElementById(id));
 }
 document.querySelectorAll(".torch").forEach(t => t.style.display = "none");
 
@@ -5620,8 +5669,6 @@ function endTimedModeRun(){
             Setbacks Taken: ${timedSetbacks}<br>
             Total Time: ${timeString}<br>
             Run ID: <strong>${runID}</strong><br>
-            Verification Code: <strong>${verificationCode}</strong><br>
-            Run ID: <strong>${runID}</strong><br>
             Verification Code: <strong>${verificationCode}</strong>
         </div>
     `;
@@ -5649,6 +5696,7 @@ function returnToModeSelectFromRun(){
 
     const hallway = document.getElementById("hallwayTransition");
     if(hallway) hallway.classList.remove("active");
+    closeGraphLightbox();
     updateScoreAttackHud();
 
     setGameControlsVisible(false);
@@ -6703,10 +6751,10 @@ if(currentQuestion.image){
     
   // --- Final Boss Entrance Shake ---
     if(diff === "finalBoss"){
-        setTimeout(()=>{
-        triggerBossShake();
-        setTimeout(triggerBossShake,450);
-        },200);
+        scheduleForCurrentRun(() => {
+            triggerBossShake();
+            scheduleForCurrentRun(triggerBossShake, 450);
+        }, 200);
     }
 }
 
@@ -7711,7 +7759,6 @@ function handleLegendaryVictory(){
             Best Streak: ${maxStreak}<br>
             Total Time: ${timeString}<br>
             Run ID: <strong>${runID}</strong><br>
-            Verification Code: <strong>${verificationCode}</strong><br>
             Verification Code: <strong>${verificationCode}</strong>
         </div>
     `;
